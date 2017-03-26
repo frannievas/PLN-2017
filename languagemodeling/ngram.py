@@ -1,6 +1,6 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
-
+from math import log
 
 class NGram(object):
 
@@ -33,6 +33,7 @@ class NGram(object):
 
         tokens -- the n-gram or (n-1)-gram tuple.
         """
+        return self.counts
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
@@ -40,15 +41,31 @@ class NGram(object):
         token -- the token.
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
+        return prob(token, prev_tokens)
+
 
     def sent_prob(self, sent):
         """Probability of a sentence. Warning: subject to underflow problems.
 
         sent -- the sentence as a list of tokens.
         """
+        prob = 1
+        for word in range(lenn):
+             if word + 1 < n:
+                 prob *= cond_prob(word,sent[0:word])
+                #  print(sent[word])
+                #  print(sent[0:word])
+             else:
+                 prob = cond_prob(word,sent[word+1-n:word])
+                #  print(sent[word])
+                #  print(sent[word+1-n:word])
 
     def sent_log_prob(self, sent):
         """Log-probability of a sentence.
 
         sent -- the sentence as a list of tokens.
         """
+        prob = 0
+        for word in sent:
+            prob += log(prob(word))
+        return prob
