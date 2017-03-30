@@ -2,6 +2,7 @@
 from collections import defaultdict
 from math import log
 
+# N-grama se utiliza n-1 palabras para calcular las probs.
 class NGram(object):
 
     def __init__(self, n, sents):
@@ -13,13 +14,28 @@ class NGram(object):
         self.n = n
         self.counts = counts = defaultdict(int)
 
+        start_tag = ["<s>"]
+        end_tag = ["</s>"]
+
+        if n != 1:
+            counts[tuple(start_tag)] += len(sents)
+            sents = [ x + ["</s>"] for x in sents ]
+
         for sent in sents:
             for i in range(len(sent) - n + 1):
                 ngram = tuple(sent[i: i + n])
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
 
-    def prob(self, token, prev_tokens=None):
+        # Delete "</s>" added in corpus
+        sents = [x[:-1] for x in sents]
+
+    def cond_prob(self, token, prev_tokens=None):
+        """Conditional probability of a token.
+
+        token -- the token.
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
         n = self.n
         if not prev_tokens:
             prev_tokens = []
@@ -33,16 +49,7 @@ class NGram(object):
 
         tokens -- the n-gram or (n-1)-gram tuple.
         """
-        return self.counts
-
-    def cond_prob(self, token, prev_tokens=None):
-        """Conditional probability of a token.
-
-        token -- the token.
-        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
-        """
-        return prob(token, prev_tokens)
-
+        return self.counts[tuple(tokens)]
 
     def sent_prob(self, sent):
         """Probability of a sentence. Warning: subject to underflow problems.
@@ -50,13 +57,13 @@ class NGram(object):
         sent -- the sentence as a list of tokens.
         """
         prob = 1
-        for word in range(lenn):
-             if word + 1 < n:
-                 prob *= cond_prob(word,sent[0:word])
+        for word in range(len(sent)):
+             if word + 1 < self.n:
+                 prob *= self.cond_prob(word,sent[0:word])
                 #  print(sent[word])
                 #  print(sent[0:word])
              else:
-                 prob = cond_prob(word,sent[word+1-n:word])
+                 prob = self.cond_prob(word,sent[word+1-self.n:word])
                 #  print(sent[word])
                 #  print(sent[word+1-n:word])
 
@@ -65,7 +72,7 @@ class NGram(object):
 
         sent -- the sentence as a list of tokens.
         """
-        prob = 0
+        a = 0
         for word in sent:
-            prob += log(prob(word))
-        return prob
+            a += log(self.prob(word))
+        return a
