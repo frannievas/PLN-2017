@@ -14,12 +14,10 @@ class NGram(object):
         self.n = n
         self.counts = counts = defaultdict(int)
 
-        start_tag = ["<s>"]
-        end_tag = ["</s>"]
-
+        # TODO: Add n-1 start_tags for a n model
         if n != 1:
-            counts[tuple(start_tag)] += len(sents)
-            sents = [ x + ["</s>"] for x in sents ]
+            sents = [ ["<s>"] + x for x in sents ]
+        sents = [ x + ["</s>"] for x in sents ]
 
         for sent in sents:
             for i in range(len(sent) - n + 1):
@@ -56,6 +54,7 @@ class NGram(object):
 
         sent -- the sentence as a list of tokens.
         """
+        # TODO: Check the length of the prev_tokens
         prob = 1
         for word in range(len(sent)):
              if word + 1 < self.n:
