@@ -5,6 +5,7 @@ from math import log
 # N-grama se utiliza n-1 palabras para calcular las probs.
 class NGram(object):
 
+
     def __init__(self, n, sents):
         """
         n -- order of the model.
@@ -13,9 +14,9 @@ class NGram(object):
         assert n > 0
         self.n = n
         self.counts = counts = defaultdict(int)
+        self.start_tag = ["<s>"]
+        self.end_tag = ["</s>"]
 
-        start_tag = ["<s>"]
-        end_tag = ["</s>"]
 
         # Old version
         # if n != 1:
@@ -26,7 +27,7 @@ class NGram(object):
             # For each sentence
             # Add n-1 start_tags at the beginning (for a n model).
             # Add one end_tag.
-            sent_tag = start_tag*(n-1) + sent + end_tag
+            sent_tag = self.start_tag*(n-1) + sent + self.end_tag
 
             for i in range(len(sent_tag) - n + 1):
                 ngram = tuple(sent_tag[i: i + n])
@@ -46,7 +47,10 @@ class NGram(object):
         assert len(prev_tokens) == n - 1
 
         tokens = prev_tokens + [token]
-        return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
+        if self.counts[tuple(prev_tokens)] == 0:
+            return 0
+        else:
+            return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
 
     def count(self, tokens):
         """Count for an n-gram or (n-1)-gram.
@@ -60,17 +64,22 @@ class NGram(object):
 
         sent -- the sentence as a list of tokens.
         """
-        # TODO: Check the length of the prev_tokens
-        prob = 1
-        for word in range(len(sent)):
-             if word + 1 < self.n:
-                 prob *= self.cond_prob(word,sent[0:word])
-                #  print(sent[word])
-                #  print(sent[0:word])
-             else:
-                 prob = self.cond_prob(word,sent[word+1-self.n:word])
-                #  print(sent[word])
-                #  print(sent[word+1-n:word])
+        prob = 1.0
+        # Add n-1 start_tags at the beginning (for a n model).
+        # Add one end_tag.
+        sent_tag = self.start_tag*(self.n-1) + sent + self.end_tag
+
+        for i in range(self.n-1, len(sent_tag)):
+            # Unigram Model
+            if self.n == 1:
+                prob *= self.cond_prob(sent_tag[i])
+            else:
+                # n > 1
+                # i-(n-1) = i + 1 - n
+                prob = self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
+                # print(sent_tag[i])
+                # print(sent_tag[i+1-self.n:i])
+        return prob
 
     def sent_log_prob(self, sent):
         """Log-probability of a sentence.
