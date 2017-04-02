@@ -76,7 +76,7 @@ class NGram(object):
             else:
                 # n > 1
                 # i-(n-1) = i + 1 - n
-                prob = self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
+                prob *= self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
                 # print(sent_tag[i])
                 # print(sent_tag[i+1-self.n:i])
         return prob
