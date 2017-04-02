@@ -73,5 +73,5 @@ class NGram(object):
         """
         a = 0
         for word in sent:
-            a += log(self.prob(word))
+            a += log(self.cond_prob(word))
         return a
