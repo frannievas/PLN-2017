@@ -1,12 +1,13 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> -o <file>
+  train.py -n <n> -o <file> [ -i <file> ]
   train.py -h | --help
 
 Options:
   -n <n>        Order of the model.
   -o <file>     Output model file.
+  -i <file>     input model file.
   -h --help     Show this screen.
 """
 from docopt import docopt
@@ -28,7 +29,12 @@ if __name__ == '__main__':
         | [][.,;"'?():-_`]  # these are separate tokens; includes ], [
     '''
     tokenizer = RegexpTokenizer(pattern)
-    corpus = PlaintextCorpusReader('corpus/', '.*\.txt', word_tokenizer=tokenizer)
+
+    if opts['-i']:
+        corpus = PlaintextCorpusReader('corpus/', opts['-i'], word_tokenizer=tokenizer)
+    else:
+        corpus = PlaintextCorpusReader('corpus/', '.*\.txt', word_tokenizer=tokenizer)
+
     sents = corpus.sents()
 
     # train the model
