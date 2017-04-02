@@ -2,9 +2,9 @@
 from collections import defaultdict
 from math import log2
 
+
 # N-grama se utiliza n-1 palabras para calcular las probs.
 class NGram(object):
-
 
     def __init__(self, n, sents):
         """
@@ -16,7 +16,6 @@ class NGram(object):
         self.counts = counts = defaultdict(int)
         self.start_tag = ["<s>"]
         self.end_tag = ["</s>"]
-
 
         # Old version
         # if n != 1:
@@ -34,7 +33,6 @@ class NGram(object):
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
 
-
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
 
@@ -50,7 +48,8 @@ class NGram(object):
         if self.counts[tuple(prev_tokens)] == 0:
             return 0
         else:
-            return float(self.counts[tuple(tokens)]) / self.counts[tuple(prev_tokens)]
+            return (float(self.counts[tuple(tokens)]) /
+                    self.counts[tuple(prev_tokens)])
 
     def count(self, tokens):
         """Count for an n-gram or (n-1)-gram.
@@ -76,7 +75,7 @@ class NGram(object):
             else:
                 # n > 1
                 # i-(n-1) = i + 1 - n
-                prob *= self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
+                prob *= self.cond_prob(sent_tag[i], sent_tag[i-(self.n-1):i])
                 # print(sent_tag[i])
                 # print(sent_tag[i+1-self.n:i])
         return prob
@@ -103,13 +102,14 @@ class NGram(object):
                     log_prob = float("-inf")
             else:
                 # n > 1
-                prob = self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
+                prob = self.cond_prob(sent_tag[i], sent_tag[i-(self.n-1):i])
                 if prob > 0:
                     log_prob += log2(prob)
                 else:
                     log_prob += float("-inf")
 
         return log_prob
+
 
 class NGramGenerator:
 

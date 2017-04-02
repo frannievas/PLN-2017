@@ -12,7 +12,7 @@ Options:
 """
 from docopt import docopt
 import pickle
-from nltk.corpus import gutenberg, PlaintextCorpusReader, RegexpTokenizer
+from nltk.corpus import PlaintextCorpusReader, RegexpTokenizer
 from languagemodeling.ngram import NGram
 
 
@@ -31,9 +31,11 @@ if __name__ == '__main__':
     tokenizer = RegexpTokenizer(pattern)
 
     if opts['-i']:
-        corpus = PlaintextCorpusReader('corpus/', opts['-i'], word_tokenizer=tokenizer)
+        corpus = PlaintextCorpusReader('corpus/', opts['-i'],
+                                       word_tokenizer=tokenizer)
     else:
-        corpus = PlaintextCorpusReader('corpus/', '.*\.txt', word_tokenizer=tokenizer)
+        corpus = PlaintextCorpusReader('corpus/',
+                                       '.*\.txt', word_tokenizer=tokenizer)
 
     sents = corpus.sents()
 
