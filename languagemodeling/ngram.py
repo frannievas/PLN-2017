@@ -14,19 +14,25 @@ class NGram(object):
         self.n = n
         self.counts = counts = defaultdict(int)
 
-        # TODO: Add n-1 start_tags for a n model
-        if n != 1:
-            sents = [ ["<s>"] + x for x in sents ]
-        sents = [ x + ["</s>"] for x in sents ]
+        start_tag = ["<s>"]
+        end_tag = ["</s>"]
+
+        # Old version
+        # if n != 1:
+        #     sents = [ ["<s>"] + x for x in sents ]
+        # sents = [ x + ["</s>"] for x in sents ]
 
         for sent in sents:
-            for i in range(len(sent) - n + 1):
-                ngram = tuple(sent[i: i + n])
+            # For each sentence
+            # Add n-1 start_tags at the beginning (for a n model).
+            # Add one end_tag.
+            sent_tag = start_tag*(n-1) + sent + end_tag
+
+            for i in range(len(sent_tag) - n + 1):
+                ngram = tuple(sent_tag[i: i + n])
                 counts[ngram] += 1
                 counts[ngram[:-1]] += 1
 
-        # Delete "</s>" added in corpus
-        sents = [x[:-1] for x in sents]
 
     def cond_prob(self, token, prev_tokens=None):
         """Conditional probability of a token.
