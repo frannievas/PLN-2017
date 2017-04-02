@@ -19,7 +19,6 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     # load the data
-    # sents = gutenberg.sents('austen-emma.txt')
     pattern = r'''(?ix)    # set flag to allow verbose regexps
           (?:sr\.|sra\.)
         | (?:[A-Z]\.)+        # abbreviations, e.g. U.S.A.
@@ -31,7 +30,7 @@ if __name__ == '__main__':
     tokenizer = RegexpTokenizer(pattern)
     corpus = PlaintextCorpusReader('corpus/', '.*\.txt', word_tokenizer=tokenizer)
     sents = corpus.sents()
-    
+
     # train the model
     n = int(opts['-n'])
     model = NGram(n, sents)
