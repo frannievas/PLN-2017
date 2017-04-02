@@ -1,6 +1,6 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
-from math import log
+from math import log2
 
 # N-grama se utiliza n-1 palabras para calcular las probs.
 class NGram(object):
@@ -86,7 +86,27 @@ class NGram(object):
 
         sent -- the sentence as a list of tokens.
         """
-        a = 0
-        for word in sent:
-            a += log(self.cond_prob(word))
-        return a
+        # a = 0
+        # for word in sent:
+        #     a += log(self.cond_prob(word))
+        # return a
+        log_prob = 0.0
+        sent_tag = self.start_tag*(self.n-1) + sent + self.end_tag
+
+        for i in range(self.n-1, len(sent_tag)):
+            # Unigram Model
+            if self.n == 1:
+                prob = self.cond_prob(sent_tag[i])
+                if prob > 0:
+                    log_prob += log2(prob)
+                else:
+                    log_prob = float("-inf")
+            else:
+                # n > 1
+                prob = self.cond_prob(sent_tag[i],sent_tag[i-(self.n-1):i])
+                if prob > 0:
+                    log_prob += log2(prob)
+                else:
+                    log_prob += float("-inf")
+
+        return log_prob
