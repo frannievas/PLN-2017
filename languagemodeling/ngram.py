@@ -17,11 +17,6 @@ class NGram(object):
         self.start_tag = ["<s>"]
         self.end_tag = ["</s>"]
 
-        # Old version
-        # if n != 1:
-        #     sents = [ ["<s>"] + x for x in sents ]
-        # sents = [ x + ["</s>"] for x in sents ]
-
         for sent in sents:
             # For each sentence
             # Add n-1 start_tags at the beginning (for a n model).
@@ -118,16 +113,22 @@ class NGramGenerator:
         model -- n-gram model.
         """
         self.model = model
-        random.seed("RANDOMSEED")
+        n = self.model.n
 
-        sss = {}
-        i = 0
-        for key in ngram.counts:
+        ngrams = set()
+        for key in model.counts:
             if len(key) == n:
-                sss[i] = (key, ngram.counts[key])
-                i += 1
+                ngrams.add(key)
 
+        # Create dict of dicts
+        self.probs = probs = defaultdict(dict)
+        self.sorted_probs = sorted_probs = defaultdict(dict)
 
+        for key in ngrams:
+                word = key[n-1]
+                tail = key[:-1]
+                # If doesn't exist the tail, defaultdict create the dict
+                probs[tail][word] = model.cond_prob(word, list(tail))
 
     def generate_sent(self):
         """Randomly generate a sentence."""
