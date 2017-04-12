@@ -137,14 +137,20 @@ class NGramGenerator:
                 sorted_probs[p].append((elem, probs[tuple(p)][elem]))
 
         # Sort
-        for key, words in sorted_probs.items():
-            words.sort(key=lambda x: x[1], reverse=True)
+        if n > 1:
+            for key, words in sorted_probs.items():
+                words.sort(key=lambda p: p[1], reverse=True)
+                words.sort(key=lambda p: p[0], reverse=True)
+        else:
+            sorted_probs[()].sort(key=lambda p: p[1], reverse=True)
+            sorted_probs[()].sort(key=lambda p: p[0], reverse=True)
+        sorted_probs = dict(sorted_probs)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
 
         prev_tokens = (self.model.n-1)*self.model.start_tag
-        sentence = prev_tokens + []
+        sentence = []
 
         word = self.generate_token(tuple(prev_tokens))
 
@@ -171,6 +177,7 @@ class NGramGenerator:
         for elem, p in list_tokens:
             if prob + p > r:
                 word = elem
+                break
             else:
                 prob += p
 
