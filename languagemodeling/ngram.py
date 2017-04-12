@@ -122,13 +122,20 @@ class NGramGenerator:
 
         # Create dict of dicts
         self.probs = probs = defaultdict(dict)
-        self.sorted_probs = sorted_probs = defaultdict(dict)
+        self.sorted_probs = sorted_probs = defaultdict(list)
 
         for key in ngrams:
                 word = key[n-1]
                 tail = key[:-1]
                 # If doesn't exist the tail, defaultdict create the dict
                 probs[tail][word] = model.cond_prob(word, list(tail))
+
+        for p in probs:
+            for elem in probs[p]:
+                sorted_probs[p].append((elem, probs[tuple(p)][elem]))
+
+        for key, words in sorted_probs.items():
+            words.sort(key=lambda x: x[1], reverse=True)
 
     def generate_sent(self):
         """Randomly generate a sentence."""
