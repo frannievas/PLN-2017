@@ -117,9 +117,35 @@ class NGramGenerator:
         """
         model -- n-gram model.
         """
+        self.model = model
+        random.seed("RANDOMSEED")
+
+        sss = {}
+        i = 0
+        for key in ngram.counts:
+            if len(key) == n:
+                sss[i] = (key, ngram.counts[key])
+                i += 1
+
+
 
     def generate_sent(self):
         """Randomly generate a sentence."""
+
+        prev_tokens = (self.model.n-1)*Ngram.start_tag
+        sentence = []
+
+        word = self.generate_token(tuple(prev_tokens))
+
+        # While don't generate the end_tag, keep generating words
+        while word != NGram.end_tag:
+            sentence.append(word)
+            if self.ngram_model.n > 1:
+                # Update the prev_tokens
+                prev_tokens = prev_tokens[1:] + [word]
+            word = self.generate_token(tuple(prev_tokens))
+
+        return sentence
 
     def generate_token(self, prev_tokens=None):
         """Randomly generate a token, given prev_tokens.
