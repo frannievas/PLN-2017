@@ -9,7 +9,22 @@ Options:
   -n <n>        Number of sentences to generate.
   -h --help     Show this screen."""
 from docopt import docopt
+import pickle
+from languagemodeling.ngram import NGram, NGramGenerator
+
 
 if __name__ == '__main__':
     opts = docopt(__doc__)
-    
+
+    n = int(opts['-n'])
+    filename = opts['-i']
+
+    f = open(filename, 'rb')
+    model = pickle.load(f)
+    f.close()
+
+    generator = NGramGenerator(model)
+    for i in range(n):
+        sent = generator.generate_sent()
+        sent = ' '.join(sent)
+        print(sent)
