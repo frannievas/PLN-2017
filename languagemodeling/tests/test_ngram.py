@@ -57,7 +57,7 @@ class TestNGram(TestCase):
             ('<s>', 'la'): 1,
         }
         for gram, c in counts.items():
-            self.assertEqual(ngram.count(gram), c)
+            self.assertEqual(ngram.count(gram), c, msg=gram)
 
     def test_cond_prob_1gram(self):
         ngram = NGram(1, self.sents)
@@ -68,7 +68,7 @@ class TestNGram(TestCase):
             'salame': 0.0,
         }
         for token, p in probs.items():
-            self.assertEqual(ngram.cond_prob(token), p)
+            self.assertEqual(ngram.cond_prob(token), p, msg=token)
 
     def test_cond_prob_2gram(self):
         ngram = NGram(2, self.sents)
@@ -79,7 +79,7 @@ class TestNGram(TestCase):
             ('salame', 'come'): 0.0,
         }
         for (token, prev), p in probs.items():
-            self.assertEqual(ngram.cond_prob(token, [prev]), p)
+            self.assertEqual(ngram.cond_prob(token, [prev]), p, msg=token)
 
     def test_sent_prob_1gram(self):
         ngram = NGram(1, self.sents)
