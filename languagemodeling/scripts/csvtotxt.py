@@ -1,13 +1,8 @@
-
-import sys
 import csv
-import json
-import argparse
 
 csv_head = ('timestamp_ms,id,user,following,follower,location,time_zone,'
             'tweet_id,is_retweet,mentions_id,'
             'mentions_username,hashtags,tweet\n')
-line_template = """{0},{1},"{2}",{3},{4},"{5}","{6}",{7},{8},"{9}","{10}","{11}","{12}"\n"""
 
 # Open output csv file
 csva = open('ouput.txt', 'a')
@@ -17,7 +12,9 @@ with open('tweets_24M.csv', 'r') as csvfile:
     for row in spamreader:
         # print(row)
         # print("\n")
-        # for timestamp_ms,id,user,following,follower,location,time_zone,tweet_id,is_retweet,mentions_id,mentions_username,hashtags,tweet, tweets_count in row:
+        # for timestamp_ms,id,user,following,follower,location,time_zone,
+        # tweet_id,is_retweet,mentions_id,mentions_username,hashtags,tweet,
+        #  tweets_count in row:
         # for i in range(len(row)):
             # print(row[12])
         csva.write(row[12] + "\n")
