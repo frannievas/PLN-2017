@@ -1,6 +1,7 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
 from math import log2
+from random import random
 
 
 # N-grama se utiliza n-1 palabras para calcular las probs.
@@ -130,10 +131,12 @@ class NGramGenerator:
                 # If doesn't exist the tail, defaultdict create the dict
                 probs[tail][word] = model.cond_prob(word, list(tail))
 
+        # Copy prob to sorted_probs
         for p in probs:
             for elem in probs[p]:
                 sorted_probs[p].append((elem, probs[tuple(p)][elem]))
 
+        # Sort
         for key, words in sorted_probs.items():
             words.sort(key=lambda x: x[1], reverse=True)
 
@@ -160,3 +163,15 @@ class NGramGenerator:
 
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
+        r = random()
+        list_tokens = self.sorted_probs[prev_tokens]
+        prob = 0
+        word = ""
+
+        for elem, p in list_tokens:
+            if prob + p > r:
+                word = elem
+            else:
+                prob += p
+
+        return word
