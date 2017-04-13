@@ -129,11 +129,13 @@ class NGram(object):
         """ Compute the cross entropy of the model.
             sents -- list of sentences, each one being a list of tokens.
         """
-        p = 0.0
+        words = 0
         for sent in sents:
-            p += self.sent_log_prob(sent)
+            words += len(sent)
 
-        return (1.0/ len(sents))*p
+        cross_entropy = self.log_prob(sents) / words
+
+        return cross_entropy
 
 
 class NGramGenerator:
