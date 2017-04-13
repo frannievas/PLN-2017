@@ -139,12 +139,11 @@ class NGramGenerator:
         # Sort
         if n > 1:
             for key, words in sorted_probs.items():
-                words.sort(key=lambda p: p[1], reverse=True)
-                words.sort(key=lambda p: p[0], reverse=True)
+                words.sort(key=lambda p: p[1])
+                words.sort(key=lambda p: p[0])
         else:
-            sorted_probs[()].sort(key=lambda p: p[1], reverse=True)
-            sorted_probs[()].sort(key=lambda p: p[0], reverse=True)
-        sorted_probs = dict(sorted_probs)
+            sorted_probs[()].sort(key=lambda p: p[1])
+            sorted_probs[()].sort(key=lambda p: p[0])
 
     def generate_sent(self):
         """Randomly generate a sentence."""
@@ -184,11 +183,23 @@ class NGramGenerator:
         return word
 
 
-class AddOneNGram:
+class AddOneNGram(NGram):
 
     """
        Todos los métodos de NGram.
     """
+    def __init__(self, n, sents):
+        super().__init__(n, sents)
+        self.n = n
+        self.word_set = word_set = set()
+
+        # As AddOneNGram is Child of Ngram -> self.start_tag = ["<s>"]
+        for sent in sents:
+            sent_tag = self.start_tag*(n-1) + sent + self.end_tag
+            for word in sent_tag:
+                word_set.add(word)
+
+        self.word_types = len(word_set)
 
     def V(self):
         """Size of the vocabulary.
