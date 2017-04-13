@@ -6,9 +6,9 @@
 #### Ejercicio 1: Corpus
 
 Como corpus en lenguaje natural se utilizó los textos de los libros de [Game_of_Thrones](https://en.wikipedia.org/wiki/Game_of_Thrones) en español.
-Como "corpus reader" se utilizó `PlaintextCorpusReader` de la libreria [nltk](http://www.nltk.org/_modules/nltk/corpus/reader/plaintext.html), junto a `RegexpTokenizer` que permite utilizar una expreción regular para poder tokenizar y segmentar las oraciones.
+Como "corpus reader" se utilizó `PlaintextCorpusReader` de la libreria [nltk](http://www.nltk.org/_modules/nltk/corpus/reader/plaintext.html), junto a `RegexpTokenizer` que permite utilizar una expresión regular para poder tokenizar y segmentar las oraciones.
 
-La siguiente es la expreción regular que se utilizo:
+La siguiente es la expresión regular que se utilizo:
 ```python
 # pattern = r'''(?ix)    # set flag to allow verbose regexps
 #       (?:sr\.|sra\.)
@@ -19,7 +19,7 @@ La siguiente es la expreción regular que se utilizo:
 #     | [][.,;"'?():-_`]  # these are separate tokens; includes ], [
 # '''
 ```
-Se procedió a verificar la correcta segmentación, y no hubo necesidad de cambiar la expreción para corregir algun defecto.
+Se procedió a verificar la correcta segmentación, y no hubo necesidad de cambiar la expresión para corregir algun defecto.
 
 #### Ejercicio 2: Modelo de n-gramas
 
@@ -81,4 +81,6 @@ Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://
 Se separo el corpus seleccionado en 2 partes. El corpus en entrenamiento y test (90% y 10% respectivamente). Como el corpus consistía de 6 libros, se procedió a utilizar 5 para entrenamiento y 1 libro para test.
 Se implementó el cálculo de log-probability, cross-entropy y perplejidad en la clase `NGram`
 
-$$\sum_{i=1}^n X_i$$
+###### log-probability
+
+    Para calcular la log-probability se utilizo la forma propuesta por Michael Collins en su (curso)[https://youtu.be/NlmKb0X-nkA?list=PLHqmonBuc8OfFECDhfoHgaWU1p4NLNuib&t=207]
