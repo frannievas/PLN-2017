@@ -35,8 +35,41 @@ Para elegir las palabras aleatorias se utiliza el método de la [transformada in
 
 ###### Palabras generadas:
 
+###### Unigrama (N = 1)
+```
+comida señores burla , un blanca está . . Nido
+lobos golpes decidido Meñique
+Somos tienes el catorce la en al fracasos bebé Ser malcríes a Cuatro , Caballero manchadas
+```
 ###### Bigrama (N = 2)
+```
+Lord Tywin era un poco .
+Por encima de los dedos de Lannister .
+Muy bien la Guardia de hielo podrido ; Timoth me hiciera , sospechó que dar con las brumas .
 
+```
+
+###### Trigrama (N = 3)
+```
+No ... no hay vela que ardía con una orden .
+Ser Kevan viene a despertarme . Alteza intervino Ser Kevan estaba frío .
+suficiente para mantenerlo caliente .
+
+```
+
+###### 4-Grama
+```
+Siento haberte pegado aquella vez dijo .
+Aunque más valdrá que les guarde el dinero hasta que volvamos a Tyrosh .
+Si encuentras pruebas ... dijo , con la maraña de cicatrices que había perdido media oreja .
+```
+###### 5-Grama
+```
+Tenían que estar locos para acercarse tanto a Invernalia .
+Sam no sabía qué podría resultar peor : que lo reconociera un enemigo de su señor padre .
+Puedo prometer que no serás molestada por visitantes no deseados .
+
+```
 
 #### Ejercicio 4: Suavizado "add-one"
 
