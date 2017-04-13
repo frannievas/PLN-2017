@@ -245,7 +245,7 @@ class AddOneNGram(NGram):
         assert len(prev_tokens) == n - 1
         tokens = prev_tokens + [token]
         return (float(self.counts[tuple(tokens)] + 1) /
-                      (self.counts[tuple(prev_tokens)] + self.word_types))
+                      (self.counts[tuple(prev_tokens)] + self.V()))
 
     def V(self):
         """Size of the vocabulary.

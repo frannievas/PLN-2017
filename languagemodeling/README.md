@@ -74,7 +74,12 @@ Puedo prometer que no serás molestada por visitantes no deseados .
 ### Ejercicio 4: Suavizado "add-one"
 
 Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertos n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros y mejorar el modelo frente a n-gramas que nunca ha visto.
+Se implementó un método `V()` que calcula la cantidad de word-types que posee el corpus, el mismo es utilizado para calcular la probilidad condicional de la siguiente manera:
+```python
+# Version simplificada
+prob = counts[tokens] + 1) / counts[prev_tokens] + V())
 
+```
 
 ### Ejercicio 5: Evaluación de Modelos de Lenguaje
 
@@ -90,3 +95,8 @@ cross-entropy = log-probability / "cantidad de palabras"
 log-probability = "sumatoria de las log probabilidades de cada oración"
 
 ```
+A continuación, se presentan los resultados de la perplexity del modelo add-one
+
+| 1 | 2 | 3 | 4 | 5 |
+| :------------- | :------------- |
+| 1234.7415215186622| 2749.1564860761564 | 22977.214575576512 | 46181.28412994249 | 57580.52871670363 |
