@@ -41,6 +41,9 @@ class NGram(object):
         assert len(prev_tokens) == n - 1
 
         tokens = prev_tokens + [token]
+
+        if n == 1:
+            return (float(self.counts[tuple(tokens)]) / self.counts[()])
         if self.counts[tuple(prev_tokens)] == 0:
             return 0
         else:
@@ -193,12 +196,11 @@ class AddOneNGram(NGram):
         self.n = n
         self.word_set = word_set = set()
 
-        # As AddOneNGram is Child of Ngram -> self.start_tag = ["<s>"]
         for sent in sents:
-            sent_tag = self.start_tag*(n-1) + sent + self.end_tag
-            for word in sent_tag:
+            for word in sent:
                 word_set.add(word)
 
+        word_set.add(self.end_tag[0])
         self.word_types = len(word_set)
 
     def cond_prob(self, token, prev_tokens=None):
@@ -212,15 +214,11 @@ class AddOneNGram(NGram):
         if not prev_tokens:
             prev_tokens = []
         assert len(prev_tokens) == n - 1
-
         tokens = prev_tokens + [token]
-        if self.counts[tuple(prev_tokens)] == 0:
-            return 0
-        else:
-            return (float(self.counts[tuple(tokens)] + 1) /
-                    self.counts[tuple(prev_tokens)] + self.word_types)
+        return (float(self.counts[tuple(tokens)] + 1) /
+                      (self.counts[tuple(prev_tokens)] + self.word_types))
 
     def V(self):
         """Size of the vocabulary.
         """
-        return self.word_set
+        return self.word_types
