@@ -10,21 +10,23 @@ Como "corpus reader" se utilizó `PlaintextCorpusReader` de la libreria [nltk](h
 
 La siguiente es la expresión regular que se utilizo:
 ```python
-# pattern = r'''(?ix)    # set flag to allow verbose regexps
-#       (?:sr\.|sra\.)
-#     | (?:[A-Z]\.)+        # abbreviations, e.g. U.S.A.
-#     | \w+(?:-\w+)*        # words with optional internal hyphens
-#     | \$?\d+(?:\.\d+)?%?  # currency and percentages, e.g. $12.40, 82%
-#     | \.\.\.            # ellipsis
-#     | [][.,;"'?():-_`]  # these are separate tokens; includes ], [
-# '''
+pattern = r'''(?ix)    # set flag to allow verbose regexps
+      (?:sr\.|sra\.)
+    | (?:[A-Z]\.)+        # abbreviations, e.g. U.S.A.
+    | \w+(?:-\w+)*        # words with optional internal hyphens
+    | \$?\d+(?:\.\d+)?%?  # currency and percentages, e.g. $12.40, 82%
+    | \.\.\.            # ellipsis
+    | [][.,;"'?():-_`]  # these are separate tokens; includes ], [
+'''
 ```
 Se procedió a verificar la correcta segmentación, y no hubo necesidad de cambiar la expresión para corregir algun defecto.
 
 ### Ejercicio 2: Modelo de n-gramas
 
 Se implementó un modelo de n-gramas con marcadores de comienzo y fin de oración (< s > y < /s > ) utilizando como base la estructura provista por la cátedra.
-El modelo de n-gramas hace una suposición de Markov de nivel n-1.
+El modelo de n-gramas hace una suposición de Markov de nivel n-1 y agrega (n-1) marcadores de inicio y un marcador final por cada oración en el corpus.
+
+Por ejemplo, dada la oración **"el gato come pescado ."** y se tiene un modelo de Trigramas. Nuestra oracion quedaría **"< s > < s > el gato come pescado . < / s >'"** y se quiere calcular la probilidad de que la palabra "el" este al comienzo de la palabra, tendriamos que calcular lo siguiente: ``Prob(el | [< s > , < s >])``
 
 ### Ejercicio 3: Generación de Texto
 
@@ -73,8 +75,7 @@ Puedo prometer que no serás molestada por visitantes no deseados .
 
 ### Ejercicio 4: Suavizado "add-one"
 
-Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertos n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros y mejorar el modelo frente a n-gramas que nunca ha visto.
-Se implementó un método `V()` que calcula la cantidad de word-types que posee el corpus, el mismo es utilizado para calcular la probilidad condicional de la siguiente manera:
+Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertos n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros y mejorar el modelo frente a n-gramas que nunca ha visto. Para ello, se creo la clase `AddOneNGram` que hereda de la clase `NGram`, ademas añade un método `V()` que calcula la cantidad de word-types que posee el corpus, el mismo es utilizado para calcular la probilidad condicional de la siguiente manera:
 ```python
 # Version simplificada
 prob = counts[tokens] + 1) / counts[prev_tokens] + V())
