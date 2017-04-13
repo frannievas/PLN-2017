@@ -23,19 +23,17 @@ Se procedió a verificar la correcta segmentación, y no hubo necesidad de cambi
 
 ### Ejercicio 2: Modelo de n-gramas
 
-Se implementó un modelo de n-gramas con marcadores de comienzo y fin de oración (< s > y < /s > ) utilizando como base la estructura provista por la cátedra.
+Se implementó un modelo de n-gramas con marcadores de comienzo y fin de oración (< s > y < /s >) utilizando como base la estructura provista por la cátedra.
 El modelo de n-gramas hace una suposición de Markov de nivel n-1 y agrega (n-1) marcadores de inicio y un marcador final por cada oración en el corpus.
 
-Por ejemplo, dada la oración **"el gato come pescado ."** y se tiene un modelo de Trigramas. Nuestra oracion quedaría **"< s > < s > el gato come pescado . < / s >'"** y se quiere calcular la probilidad de que la palabra "el" este al comienzo de la palabra, tendriamos que calcular lo siguiente: ``Prob(el | [< s > , < s >])``
+Por ejemplo, dada la oración **"el gato come pescado ."** y se tiene un modelo de Trigramas. Nuestra oracion quedaría **"< s > < s > el gato come pescado . < / s >'"** y si se quisiera calcular la probilidad de que la palabra "el" este al comienzo de la palabra, tendriamos que calcular lo siguiente: ``Prob(el | [< s > , < s >])``
 
 ### Ejercicio 3: Generación de Texto
 
-Se implementó una clase `NGramGenerator` que genera oraciones del lenguaje natural. Para ello recibe como parámetro un modelo entrenado y luego para generar las oraciones posee un método `generate_sentence` que utiliza a `generate_token` para generar palabras hasta que el marcador de fin de oración es generado.
-
-Para elegir las palabras aleatorias se utiliza el método de la [transformada inversa](https://en.wikipedia.org/wiki/Inverse_transform_sampling)
+Se implementó una clase `NGramGenerator` que genera oraciones del lenguaje natural. Para ello recibe como parámetro un modelo entrenado y luego para generar las oraciones posee un método `generate_sentence` que utiliza a `generate_token` para generar palabras hasta que el marcador de fin de oración es generado. Para elegir las palabras aleatorias se utiliza el método de la [transformada inversa](https://en.wikipedia.org/wiki/Inverse_transform_sampling)
 
 
-###### Palabras generadas:
+A continuación se presentan algunas oraciones generadas por cada uno de los n-gramas
 
 ###### Unigrama (N = 1)
 ```
@@ -78,7 +76,7 @@ Puedo prometer que no serás molestada por visitantes no deseados .
 Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertos n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros y mejorar el modelo frente a n-gramas que nunca ha visto. Para ello, se creo la clase `AddOneNGram` que hereda de la clase `NGram`, ademas añade un método `V()` que calcula la cantidad de word-types que posee el corpus, el mismo es utilizado para calcular la probilidad condicional de la siguiente manera:
 ```python
 # Version simplificada
-prob = counts[tokens] + 1) / counts[prev_tokens] + V())
+prob = (counts[tokens] + 1) / (counts[prev_tokens] + V())
 
 ```
 
@@ -101,3 +99,5 @@ A continuación, se presentan los resultados de la perplexity del modelo add-one
 | 1 | 2 | 3 | 4 | 5 |
 | :------------- | :------------- |
 | 1234.7415215186622| 2749.1564860761564 | 22977.214575576512 | 46181.28412994249 | 57580.52871670363 |
+
+Por lo que podemos observar la perplexity empeora a medida que el tamaño del n-grama aumenta

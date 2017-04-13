@@ -1,7 +1,6 @@
 # https://docs.python.org/3/library/collections.html
 from collections import defaultdict
 from math import log2
-from random import random
 from numpy.random import uniform
 
 
@@ -245,7 +244,7 @@ class AddOneNGram(NGram):
         assert len(prev_tokens) == n - 1
         tokens = prev_tokens + [token]
         return (float(self.counts[tuple(tokens)] + 1) /
-                      (self.counts[tuple(prev_tokens)] + self.V()))
+                (self.counts[tuple(prev_tokens)] + self.V()))
 
     def V(self):
         """Size of the vocabulary.
