@@ -2,6 +2,7 @@
 from collections import defaultdict
 from math import log2
 from random import random
+from numpy.random import uniform
 
 
 # N-grama se utiliza n-1 palabras para calcular las probs.
@@ -171,8 +172,9 @@ class NGramGenerator:
 
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
-        r = random()
         list_tokens = self.sorted_probs[prev_tokens]
+        s = sum(w for c, w in list_tokens)
+        r = uniform(0, s)
         prob = 0
         word = ""
 
