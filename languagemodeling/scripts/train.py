@@ -30,12 +30,8 @@ if __name__ == '__main__':
     '''
     tokenizer = RegexpTokenizer(pattern)
 
-    if opts['-i']:
-        corpus = PlaintextCorpusReader('corpus/', opts['-i'],
-                                       word_tokenizer=tokenizer)
-    else:
-        corpus = PlaintextCorpusReader('corpus/',
-                                       '.*\.txt', word_tokenizer=tokenizer)
+    corpus = PlaintextCorpusReader('corpus/',
+                                   '.*\.txt', word_tokenizer=tokenizer)
 
     sents = corpus.sents()
 

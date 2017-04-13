@@ -10,7 +10,7 @@ Options:
   -h --help     Show this screen."""
 from docopt import docopt
 import pickle
-from languagemodeling.ngram import NGram, NGramGenerator
+from languagemodeling.ngram import NGramGenerator
 
 
 if __name__ == '__main__':
