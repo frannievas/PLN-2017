@@ -182,3 +182,14 @@ class NGramGenerator:
                 prob += p
 
         return word
+
+
+class AddOneNGram:
+
+    """
+       Todos los métodos de NGram.
+    """
+
+    def V(self):
+        """Size of the vocabulary.
+        """
