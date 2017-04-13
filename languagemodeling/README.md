@@ -77,3 +77,8 @@ Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://
 
 
 #### Ejercicio 5: Evaluación de Modelos de Lenguaje
+
+Se separo el corpus seleccionado en 2 partes. El corpus en entrenamiento y test (90% y 10% respectivamente). Como el corpus consistía de 6 libros, se procedió a utilizar 5 para entrenamiento y 1 libro para test.
+Se implementó el cálculo de log-probability, cross-entropy y perplejidad en la clase `NGram`
+
+$$\sum_{i=1}^n X_i$$
