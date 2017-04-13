@@ -114,7 +114,10 @@ class NGram(object):
         """Compute the sum of the log probabilities of sentences.
         sents -- list of sentences, each one being a list of tokens.
         """
-        pass
+        prob = 0
+        for sent in sents:
+            prob += self.sent_log_prob(sent)
+        return prob
 
     def perplexity(self, sents):
         """Compute the perplexity of sentences.
