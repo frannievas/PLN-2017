@@ -32,8 +32,12 @@ if __name__ == '__main__':
     '''
     tokenizer = RegexpTokenizer(pattern)
 
-    corpus = PlaintextCorpusReader('corpus/',
-                                   '.*\.txt', word_tokenizer=tokenizer)
+    root = 'corpus'
+    filename = 'juego2.txt'
+    corpus = PlaintextCorpusReader(root, '.*\.txt', word_tokenizer=tokenizer)
+
+    # corpus = PlaintextCorpusReader('corpus/',
+    #                                '.*\.txt', word_tokenizer=tokenizer)
 
     sents = corpus.sents()
 
@@ -42,7 +46,6 @@ if __name__ == '__main__':
 
     if opts['-m'] == 'addone':
         model = AddOneNGram(n, sents)
-        print("ADDONE")
     else:
         model = NGram(n, sents)
 
