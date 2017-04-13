@@ -1,9 +1,9 @@
-### Trabajo Práctico 1 - Modelado de Lenguaje
+## Trabajo Práctico 1 - Modelado de Lenguaje
 
 - Francisco Nievas
 * frannievas@gmail.com
 
-#### Ejercicio 1: Corpus
+### Ejercicio 1: Corpus
 
 Como corpus en lenguaje natural se utilizó los textos de los libros de [Game_of_Thrones](https://en.wikipedia.org/wiki/Game_of_Thrones) en español.
 Como "corpus reader" se utilizó `PlaintextCorpusReader` de la libreria [nltk](http://www.nltk.org/_modules/nltk/corpus/reader/plaintext.html), junto a `RegexpTokenizer` que permite utilizar una expresión regular para poder tokenizar y segmentar las oraciones.
@@ -21,12 +21,12 @@ La siguiente es la expresión regular que se utilizo:
 ```
 Se procedió a verificar la correcta segmentación, y no hubo necesidad de cambiar la expresión para corregir algun defecto.
 
-#### Ejercicio 2: Modelo de n-gramas
+### Ejercicio 2: Modelo de n-gramas
 
 Se implementó un modelo de n-gramas con marcadores de comienzo y fin de oración (< s > y < /s > ) utilizando como base la estructura provista por la cátedra.
 El modelo de n-gramas hace una suposición de Markov de nivel n-1.
 
-#### Ejercicio 3: Generación de Texto
+### Ejercicio 3: Generación de Texto
 
 Se implementó una clase `NGramGenerator` que genera oraciones del lenguaje natural. Para ello recibe como parámetro un modelo entrenado y luego para generar las oraciones posee un método `generate_sentence` que utiliza a `generate_token` para generar palabras hasta que el marcador de fin de oración es generado.
 
@@ -71,16 +71,22 @@ Puedo prometer que no serás molestada por visitantes no deseados .
 
 ```
 
-#### Ejercicio 4: Suavizado "add-one"
+### Ejercicio 4: Suavizado "add-one"
 
-Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertas n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros.
+Se implemento el método de suavizado "add-one" [(*laplace* smoothing)](https://en.wikipedia.org/wiki/Additive_smoothing) el cual consiste en "repartir" las probabilidades de que ocurran ciertos n-gramas en nuestro modelo para evitar tener una masiva cantidad de ceros y mejorar el modelo frente a n-gramas que nunca ha visto.
 
 
-#### Ejercicio 5: Evaluación de Modelos de Lenguaje
+### Ejercicio 5: Evaluación de Modelos de Lenguaje
 
 Se separo el corpus seleccionado en 2 partes. El corpus en entrenamiento y test (90% y 10% respectivamente). Como el corpus consistía de 6 libros, se procedió a utilizar 5 para entrenamiento y 1 libro para test.
-Se implementó el cálculo de log-probability, cross-entropy y perplejidad en la clase `NGram`
+Se implementó el cálculo de log-probability, cross-entropy y perplexity en la clase `NGram`
 
-###### log-probability
+Para calcular las mismas se utilizo la forma propuesta por Michael Collins en su [curso](https://youtu.be/NlmKb0X-nkA?list=PLHqmonBuc8OfFECDhfoHgaWU1p4NLNuib&t=207). Donde:
+```python
+perplexity = 2 ** (- cross-entropy)
 
-    Para calcular la log-probability se utilizo la forma propuesta por Michael Collins en su (curso)[https://youtu.be/NlmKb0X-nkA?list=PLHqmonBuc8OfFECDhfoHgaWU1p4NLNuib&t=207]
+cross-entropy = log-probability / "cantidad de palabras"  
+
+log-probability = "sumatoria de las log probabilidades de cada oración"
+
+```
