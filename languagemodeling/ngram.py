@@ -201,6 +201,26 @@ class AddOneNGram(NGram):
 
         self.word_types = len(word_set)
 
+    def cond_prob(self, token, prev_tokens=None):
+        """Conditional probability add-one of a token.
+
+        token -- the token.
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
+
+        n = self.n
+        if not prev_tokens:
+            prev_tokens = []
+        assert len(prev_tokens) == n - 1
+
+        tokens = prev_tokens + [token]
+        if self.counts[tuple(prev_tokens)] == 0:
+            return 0
+        else:
+            return (float(self.counts[tuple(tokens)] + 1) /
+                    self.counts[tuple(prev_tokens)] + self.word_types)
+
     def V(self):
         """Size of the vocabulary.
         """
+        return self.word_set
