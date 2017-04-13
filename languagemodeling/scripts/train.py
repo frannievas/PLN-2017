@@ -1,19 +1,21 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> -o <file> [ -i <file> ]
+  train.py -n <n> -o <file> [ -m <model> ]
   train.py -h | --help
 
 Options:
   -n <n>        Order of the model.
+  -m <model>    Model to use [default: ngram]:
+                ngram: Unsmoothed n-grams.
+                addone: N-grams with add-one smoothing.
   -o <file>     Output model file.
-  -i <file>     input model file.
   -h --help     Show this screen.
 """
 from docopt import docopt
 import pickle
 from nltk.corpus import PlaintextCorpusReader, RegexpTokenizer
-from languagemodeling.ngram import NGram
+from languagemodeling.ngram import NGram, AddOneNGram
 
 
 if __name__ == '__main__':
@@ -37,7 +39,12 @@ if __name__ == '__main__':
 
     # train the model
     n = int(opts['-n'])
-    model = NGram(n, sents)
+
+    if opts['-m'] == 'addone':
+        model = AddOneNGram(n, sents)
+        print("ADDONE")
+    else:
+        model = NGram(n, sents)
 
     # save it
     filename = opts['-o']
