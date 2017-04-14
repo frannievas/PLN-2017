@@ -74,9 +74,7 @@ class NGram(object):
             else:
                 # n > 1
                 # i-(n-1) = i + 1 - n
-                prob *= self.cond_prob(sent_tag[i], sent_tag[i-(self.n-1):i])
-                # print(sent_tag[i])
-                # print(sent_tag[i+1-self.n:i])
+                prob *= self.cond_prob(sent_tag[i], sent_tag[i-(self.n - 1):i])
         return prob
 
     def sent_log_prob(self, sent):
@@ -84,10 +82,7 @@ class NGram(object):
 
         sent -- the sentence as a list of tokens.
         """
-        # a = 0
-        # for word in sent:
-        #     a += log(self.cond_prob(word))
-        # return a
+
         log_prob = 0.0
         sent_tag = self.start_tag*(self.n-1) + sent + self.end_tag
 
