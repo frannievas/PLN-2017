@@ -32,12 +32,8 @@ if __name__ == '__main__':
     '''
     tokenizer = RegexpTokenizer(pattern)
 
-    root = 'corpus'
-    filename = 'juego2.txt'
-    corpus = PlaintextCorpusReader(root, '.*\.txt', word_tokenizer=tokenizer)
-
-    # corpus = PlaintextCorpusReader('corpus/',
-    #                                '.*\.txt', word_tokenizer=tokenizer)
+    root = '.'
+    corpus = PlaintextCorpusReader(root, 'books\.txt', word_tokenizer=tokenizer)
 
     sents = corpus.sents()
 
