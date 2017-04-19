@@ -259,12 +259,18 @@ class InterpolatedNGram(NGram):
         """
         super().__init__(n, sents)
         self.n = n
+        self.gamma = gamma
+
+        self.total_words = 12
 
         if gamma is None:
             # Crop held-out data and calculate gamma
             ten = int(90 * len(sents) / 100)
             self.held_out = sents[ten:]
             sents = sents[:ten]
+
+            self.total_words = sum([ len(x)+(n) for x in self.held_out])
+
             # Estimate gamma with the held-out data
             self.gamma = self.estimate_gamma(self.held_out)
 
@@ -276,10 +282,15 @@ class InterpolatedNGram(NGram):
         """
         lambdas = []
 
+        lambdas.append(float(self.counts[tuple(prev_tokens)]) /
+                       (self.counts[tuple(prev_tokens)] + self.gamma))
+
         # i <= n-1
         for i in range(1, self.n-1):
-            lambdas.append(float(self.counts[tuple(prev_tokens)]) /
-                           self.counts[tuple(prev_tokens)] + self.gamma)
+            s = 1 - sum(lambdas)
+            l = s * (float(self.counts[tuple(prev_tokens)]) /
+                          (self.counts[tuple(prev_tokens)] + self.gamma))
+            lambdas.append(l)
         # i == n
         lambdas.append(1 - sum(lambdas))
 
@@ -302,11 +313,13 @@ class InterpolatedNGram(NGram):
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
         n = self.n
-        prob = 1.0
-
+        prob = 0
+        import ipdb; ipdb.set_trace()
         lambdas = self._lambda(prev_tokens)
         for i in range(len(lambdas)):
-            prob += lambdas[i] * self.cond_prob_ML(n, token, prev_tokens[:-i])
+            prob += lambdas[i] * self.cond_prob_ML(token, prev_tokens[i:])
+
+        return prob
 
     def cond_prob_ML(self, token, prev_tokens=None):
         """Maximum likelihood Conditional probability of a token.
@@ -315,11 +328,9 @@ class InterpolatedNGram(NGram):
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
         n = self.n
-        # TODO: self.counts[()]
-        if n == 1:
-            return (float(self.counts[tuple(tokens)]) / self.counts[()])
-        if self.counts[tuple(prev_tokens)] == 0:
-            return 0
-        else:
-            return (float(self.counts[tuple(tokens)]) /
+        tokens = prev_tokens + [token]
+
+        if len(prev_tokens) == 0:
+            return (float(self.counts[tuple(tokens)]) / self.total_words)
+        return (float(self.counts[tuple(tokens)]) /
                     self.counts[tuple(prev_tokens)])
