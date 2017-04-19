@@ -260,3 +260,27 @@ class InterpolatedNGram(NGram):
         super().__init__(n, sents)
         self.n = n
         self.gamma = gamma
+
+    def cond_prob(self,token, prev_tokens=None):
+        pass
+
+    def cond_prob_ML(self, token, prev_tokens=None):
+        """Conditional probability of a token.
+
+        token -- the token.
+        prev_tokens -- the previous n-1 tokens (optional only if n = 1).
+        """
+        n = self.n
+        if not prev_tokens:
+            prev_tokens = []
+        assert len(prev_tokens) == n - 1
+
+        tokens = prev_tokens + [token]
+
+        if n == 1:
+            return (float(self.counts[tuple(tokens)]) / self.counts[()])
+        if self.counts[tuple(prev_tokens)] == 0:
+            return 0
+        else:
+            return (float(self.counts[tuple(tokens)]) /
+                    self.counts[tuple(prev_tokens)])
