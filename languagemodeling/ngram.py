@@ -269,12 +269,30 @@ class InterpolatedNGram(NGram):
             self.gamma = self.estimate_gamma(self.held_out)
 
 
+    def _lambda(self, prev_tokens):
+        """
+        Compute all lambda given the prev_tokens
+        prev_tokens -- list of previous tokens.
+        """
+        lambdas = []
+
+        # i <= n-1
+        for i in range(1, self.n-1):
+            lambdas.append(float(self.counts[tuple(prev_tokens)]) /
+                           self.counts[tuple(prev_tokens)] + self.gamma)
+        # i == n
+        lambdas.append(1 - sum(lambdas))
+
+        return lambdas
+
     def estimate_gamma(self, held_out):
         """
         sents --
         held_out -- list of sentences, each one being a list of tokens.
         """
         self.held_out = held_out
+        self.gamma = 1
+
         return 1
 
     def cond_prob(self,token, prev_tokens=None):
