@@ -259,7 +259,23 @@ class InterpolatedNGram(NGram):
         """
         super().__init__(n, sents)
         self.n = n
-        self.gamma = gamma
+
+        if gamma is None:
+            # Crop held-out data and calculate gamma
+            ten = int(90 * len(sents) / 100)
+            self.held_out = sents[ten:]
+            sents = sents[:ten]
+            # Estimate gamma with the held-out data
+            self.gamma = self.estimate_gamma(self.held_out)
+
+
+    def estimate_gamma(self, held_out):
+        """
+        sents --
+        held_out -- list of sentences, each one being a list of tokens.
+        """
+        self.held_out = held_out
+        return 1
 
     def cond_prob(self,token, prev_tokens=None):
         pass
