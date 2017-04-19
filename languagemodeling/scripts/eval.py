@@ -25,7 +25,7 @@ if __name__ == '__main__':
         | [][.,;"'?():-_`]  # these are separate tokens; includes ], [
     '''
     tokenizer = RegexpTokenizer(pattern)
-    root = 'corpus_eval'
+    root = '.'
     filename = 'eval.txt'
     corpus = PlaintextCorpusReader(root, filename, word_tokenizer=tokenizer)
     sents = corpus.sents()
