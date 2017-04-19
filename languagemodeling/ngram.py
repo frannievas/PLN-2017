@@ -257,3 +257,6 @@ class InterpolatedNGram(NGram):
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
+        super().__init__(n, sents)
+        self.n = n
+        self.gamma = gamma
