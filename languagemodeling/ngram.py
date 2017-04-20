@@ -261,14 +261,21 @@ class InterpolatedNGram(NGram):
         self.n = n
         self.gamma = gamma
 
-        self.total_words = 12
+        # Recalculate all the counts
+        self.counts = counts = defaultdict(int)
+        for nn in range(1,n+1):
+            for sent in sents:
+                sent_tag = self.start_tag*(nn-1) + sent + self.end_tag
+                for i in range(len(sent_tag) - nn + 1):
+                    ngram = tuple(sent_tag[i: i + nn])
+                    counts[ngram] += 1
+                    counts[ngram[:-1]] += 1
+
         if gamma is None:
             # Crop held-out data and calculate gamma
             ten = int(90 * len(sents) / 100)
             self.held_out = sents[ten:]
             sents = sents[:ten]
-
-            self.total_words = sum([len(x)+(n) for x in self.held_out])
 
             # Estimate gamma with the held-out data
             self.estimate_gamma(self.held_out)
@@ -303,16 +310,13 @@ class InterpolatedNGram(NGram):
         n = self.n
         self.gamma = 1
 
-        gamma_old = 1
-        old = self.log_prob(held_out)
+        # old = self.log_prob(held_out)
+        # gamma_old = 1
 
-        # TODO: Check if there is more than 1 sentence
-        for i in range(2, 1000000, 1000):
+        for i in range(1, 10000, 500):
             self.gamma = i
             prob = self.log_prob(held_out)
-            if prob > old:
-                old = prob
-                gamma_old = self.gamma
+            print("Gamma:{} prob: {}".format(self.gamma, prob))
 
         return self.gamma
 
@@ -338,6 +342,6 @@ class InterpolatedNGram(NGram):
         tokens = prev_tokens + [token]
 
         if len(prev_tokens) == 0:
-            return (float(self.counts[tuple(tokens)]) / self.total_words)
+            return (float(self.counts[tuple(tokens)]) / self.counts[()])
         return (float(self.counts[tuple(tokens)]) /
                 self.counts[tuple(prev_tokens)])
