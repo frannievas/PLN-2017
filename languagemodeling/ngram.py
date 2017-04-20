@@ -308,16 +308,21 @@ class InterpolatedNGram(NGram):
         """
         self.held_out = held_out
         n = self.n
-        self.gamma = 1
+        self.gamma = 0
 
-        # old = self.log_prob(held_out)
-        # gamma_old = 1
+        old = self.log_prob(held_out)
+        old_gamma = 0
 
-        for i in range(1, 10000, 500):
+        elements = [ 2 ** x for x in range(20)]
+
+        for i in elements:
             self.gamma = i
             prob = self.log_prob(held_out)
-            print("Gamma:{} prob: {}".format(self.gamma, prob))
-
+            if prob > old:
+                old_gamma = i
+                old = prob
+        self.gamma = old_gamma
+        print("Gamma:{} prob: {}".format(self.gamma, old))
         return self.gamma
 
     def cond_prob(self, token, prev_tokens=None):
