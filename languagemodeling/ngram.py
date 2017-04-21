@@ -261,31 +261,44 @@ class InterpolatedNGram(NGram):
         self.n = n
         self.gamma = gamma
 
+        # Crop held-out data and calculate gamma
+        ten = int(90 * len(sents) / 100)
+        held_out = sents[ten:]
+        sents = sents[:ten]
+
+        print("Computing counts...")
         # Recalculate all the counts
         self.counts = counts = defaultdict(int)
-        for nn in range(1,n+1):
-            for sent in sents:
-                sent_tag = self.start_tag*(nn-1) + sent + self.end_tag
-                for i in range(len(sent_tag) - nn + 1):
-                    ngram = tuple(sent_tag[i: i + nn])
-                    counts[ngram] += 1
-                    counts[ngram[:-1]] += 1
+        for sent in sents:
+            sent_tag = self.start_tag*(n-1) + sent + self.end_tag
+            for i in range(len(sent_tag) - n + 1):
+                ngram = tuple(sent_tag[i: i + n])
+                counts[ngram] += 1
+                counts[ngram[:-1]] += 1
+
+        # Me falta el counts[()]
+        w = 0
+        for sent in sents:
+            for words in sent:
+                w += 1
+            w += 1
+        self.counts[()] = w
 
         if gamma is None:
-            # Crop held-out data and calculate gamma
-            ten = int(90 * len(sents) / 100)
-            self.held_out = sents[ten:]
-            sents = sents[:ten]
-
             # Estimate gamma with the held-out data
-            self.estimate_gamma(self.held_out)
+            self.gamma = self.estimate_gamma(held_out)
 
     def _lambda(self, prev_tokens):
         """
         Compute all lambda given the prev_tokens
+        Return list with all the lambdas.
         prev_tokens -- list of previous tokens.
         """
         lambdas = []
+
+        # Unigrams , and only one lambda = 1
+        if not prev_tokens:
+            return [1]
 
         lambdas.append(float(self.counts[tuple(prev_tokens)]) /
                        (self.counts[tuple(prev_tokens)] + self.gamma))
@@ -306,12 +319,15 @@ class InterpolatedNGram(NGram):
         sents --
         held_out -- list of sentences, each one being a list of tokens.
         """
-        self.held_out = held_out
+        print("Estimate gamma...")
+
         n = self.n
-        self.gamma = 0
+        self.gamma = 1
+
 
         old = self.log_prob(held_out)
-        old_gamma = 0
+        old_gamma = 1
+        print("Gamma:{} prob: {}".format(old_gamma, old))
 
         elements = [ 2 ** x for x in range(20)]
 
@@ -321,8 +337,8 @@ class InterpolatedNGram(NGram):
             if prob > old:
                 old_gamma = i
                 old = prob
+            print("Gamma:{} prob: {}".format(self.gamma, prob))
         self.gamma = old_gamma
-        print("Gamma:{} prob: {}".format(self.gamma, old))
         return self.gamma
 
     def cond_prob(self, token, prev_tokens=None):
@@ -332,6 +348,8 @@ class InterpolatedNGram(NGram):
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
         prob = 0
+        if not prev_tokens:
+            return self.cond_prob_ML(token)
         lambdas = self._lambda(prev_tokens)
         for i in range(len(lambdas)):
             prob += lambdas[i] * self.cond_prob_ML(token, prev_tokens[i:])
@@ -344,9 +362,14 @@ class InterpolatedNGram(NGram):
         token -- the token.
         prev_tokens -- the previous n-1 tokens (optional only if n = 1).
         """
+        if not prev_tokens:
+            prev_tokens = []
+
         tokens = prev_tokens + [token]
 
         if len(prev_tokens) == 0:
             return (float(self.counts[tuple(tokens)]) / self.counts[()])
+        if self.counts[tuple(prev_tokens)] == 0:
+            return 0
         return (float(self.counts[tuple(tokens)]) /
                 self.counts[tuple(prev_tokens)])

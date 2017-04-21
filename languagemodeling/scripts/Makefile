@@ -8,3 +8,6 @@ generate:
 
 eval:
 	$(MAKE) -C $(ROOT) eval
+
+inter:
+	$(MAKE) -C $(ROOT) inter

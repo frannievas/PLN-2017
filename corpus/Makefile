@@ -19,3 +19,6 @@ eval:
 	python $(RR)eval.py -i GOT2
 	python $(RR)eval.py -i GOT3
 	python $(RR)eval.py -i GOT4
+
+inter:
+	python $(RR)train.py -n 2 -o GOT2 -m inter
