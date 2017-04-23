@@ -414,7 +414,7 @@ class InterpolatedNGram(NGram):
         return prob
 
 
-class BackOffNGram:
+class BackOffNGram(NGram):
 
     def __init__(self, n, sents, beta=None, addone=True):
         """
@@ -426,10 +426,31 @@ class BackOffNGram:
             held-out data).
         addone -- whether to use addone smoothing (default: True).
         """
+        # Crop held-out data
+        if beta is None:
+            ten = int(90 * len(sents) / 100)
+            held_out = sents[ten:]
+            sents = sents[:ten]
 
-    """
-       Todos los métodos de NGram.
-    """
+        self.models = models = []
+        self.addone = addone
+        if addone:
+            models.append(AddOneNGram(1, sents))
+        else:
+            models.append(NGram(1, sents))
+
+        for i in range(1, n):
+            models.append(NGram(i + 1, sents))
+
+        super().__init__(n, train)
+
+        self.precalculate_A()
+
+        if beta is None:
+            self.estimate_beta()
+
+    def precalculate_A(self):
+        pass
 
     def A(self, tokens):
         """Set of words with counts > 0 for a k-gram with 0 < k < n.
