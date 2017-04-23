@@ -261,32 +261,32 @@ class InterpolatedNGram(NGram):
         self.n = n
         self.gamma = gamma
 
-        # Crop held-out data and calculate gamma
-        ten = int(90 * len(sents) / 100)
-        held_out = sents[ten:]
-        sents = sents[:ten]
+        # Crop held-out data
+        if gamma is None:
+            ten = int(90 * len(sents) / 100)
+            held_out = sents[ten:]
+            sents = sents[:ten]
 
         print("Computing counts...")
-        # Recalculate all the counts
+        # Calculate all the counts
         self.counts = counts = defaultdict(int)
         for sent in sents:
-            sent_tag = self.start_tag*(n-1) + sent + self.end_tag
-            for i in range(len(sent_tag) - n + 1):
-                ngram = tuple(sent_tag[i: i + n])
-                counts[ngram] += 1
-                counts[ngram[:-1]] += 1
-
-        # Me falta el counts[()]
-        w = 0
-        for sent in sents:
-            for words in sent:
-                w += 1
-            w += 1
-        self.counts[()] = w
+            for j in range(0, n + 1):
+                sent_tag = self.start_tag*(j-1) + sent + self.end_tag
+                # TODO: fijarse el range
+                for i in range(len(sent) - j + 1):
+                    ngram = tuple(sent[i: i + j])
+                    counts[ngram] += 1
 
         if gamma is None:
             # Estimate gamma with the held-out data
             self.gamma = self.estimate_gamma(held_out)
+
+        self.addone = addone
+        # Vocabulary for calculate addone
+        self.vocabulary = {w for s in sents for w in s}
+        self.vocabulary.discard('<s>')
+        self.vocabulary.discard('</s>')
 
     def _lambda(self, prev_tokens):
         """
@@ -322,23 +322,27 @@ class InterpolatedNGram(NGram):
         print("Estimate gamma...")
 
         n = self.n
+        # It's a unigram
+        if n == 1:
+            return 1
+
+        ITER = 10
+        BASE = 10
+        VALUES = [BASE ** i for x in range(ITER)]
+
         self.gamma = 1
+        best_gamma = 1
+        max_prob = self.log_prob(self.held_out)
 
-
-        old = self.log_prob(held_out)
-        old_gamma = 1
-        print("Gamma:{} prob: {}".format(old_gamma, old))
-
-        elements = [ 2 ** x for x in range(20)]
-
-        for i in elements:
+        for i in VALUES:
             self.gamma = i
             prob = self.log_prob(held_out)
-            if prob > old:
-                old_gamma = i
-                old = prob
-            print("Gamma:{} prob: {}".format(self.gamma, prob))
-        self.gamma = old_gamma
+            if prob > max_prob:
+                max_prob = prob
+                best_gamma = self.gamma
+            # print("Gamma:{} prob: {}".format(self.gamma, prob))
+
+        self.gamma = best_gamma
         return self.gamma
 
     def cond_prob(self, token, prev_tokens=None):
