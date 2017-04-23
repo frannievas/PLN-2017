@@ -1,7 +1,7 @@
 """Train an n-gram model.
 
 Usage:
-  train.py -n <n> -o <file> [ -m <model> -g <gamma> ]
+  train.py -n <n> -o <file> [ -m <model> [-g <gamma>] ]
   train.py -h | --help
 
 Options:
@@ -10,6 +10,7 @@ Options:
                 ngram: Unsmoothed n-grams.
                 addone: N-grams with add-one smoothing.
                 inter: InterpolatedNGram.
+                interaddone: InterpolatedNGram with addone smoothing.
   -g <gamma>    Gamma for InterpolatedNGram
   -o <file>     Output model file.
   -h --help     Show this screen.
@@ -44,13 +45,18 @@ if __name__ == '__main__':
 
     if opts['-m'] == 'addone':
         model = AddOneNGram(n, sents)
-    if opts['-m'] == 'inter':
-        try:
-            gamma = int(opts['-g'])
-        except Exception as e:
-            gamma = None
-
-        model = InterpolatedNGram(n, sents, gamma, True)
+    elif opts['-m'] == 'inter':
+        gamma = opts['-g']
+        if gamma is None:
+            model = InterpolatedNGram(n, sents, None, False)
+        else:
+            model = InterpolatedNGram(n, sents, gamma, False)
+    elif opts['-m'] == 'interaddone':
+        gamma = opts['-g']
+        if gamma is None:
+            model = InterpolatedNGram(n, sents, None, True)
+        else:
+            model = InterpolatedNGram(n, sents, gamma, True)
     else:
         model = NGram(n, sents)
 
