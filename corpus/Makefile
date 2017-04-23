@@ -22,3 +22,6 @@ eval:
 
 inter:
 	python $(RR)train.py -n 2 -o GOT2 -m inter
+
+interaddone:
+	python $(RR)train.py -n 2 -o GOT2 -m interaddone
