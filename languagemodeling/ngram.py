@@ -292,22 +292,21 @@ class InterpolatedNGram(NGram):
         lambdas = list()
         models = self.models
         prev_tokens = tuple(prev_tokens)
-        weight = 1
         for i in range(0, len(prev_tokens) - 1):
-            # Getting the correspondly (to the N-gram) segment of the prev_tokens
+            # Getting the correspondly (to the N-gram) segment
+            # of the prev_tokens
             this = prev_tokens[i: -1]
-            # The model correspondly with this step
+
             model = models[len(this) - 1]
             count = model.count(this)
 
             # Calculate and save the lambda
             if count != 0 or gamma != 0:
-                lambdas.append((1 - sum(lambdas)* (count / (count + gamma))))
+                lambdas.append((1 - sum(lambdas) * (count / (count + gamma))))
 
         # Save the lambda correspondly to the nth gram
         lambdas.append(1 - sum(lambdas))
         return(lambdas)
-
 
     def estimate_gamma(self, held_out):
         """
@@ -356,7 +355,8 @@ class InterpolatedNGram(NGram):
         prob = 0
         lambdas = self._lambda(tokens)
         for i in range(len(lambdas)):
-            prob += lambdas[i] * models[len(tokens[i:-1])].cond_prob(token, prev_tokens[i:])
+            q = models[len(tokens[i:-1])].cond_prob(token, prev_tokens[i:])
+            prob += lambdas[i] * q
 
         return prob
 
