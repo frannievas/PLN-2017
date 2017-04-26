@@ -56,3 +56,10 @@ if __name__ == '__main__':
     for a, b in most_common_taggs:
         words = [a for a, b in w[a]]
         print(str(a) + "  | " + str(b) + "  | " + str((b/total_taggs) * 100) +  "  | " + str(words))
+
+
+    t = PrettyTable(["Tagg", "Counts", "percent", "Words"])
+    for a, b in most_common_taggs:
+        row = [str(a), str(b), str((b/total_taggs) * 100), str([a for a, b in w[a]]) ]
+        t.add_row(row)
+    print(t)
