@@ -5,6 +5,11 @@
 
 ### Ejercicio 1: Corpus Ancora: Estadísticas de etiquetas POS
 
+- sents: 17379
+- total words: 517269
+- vocabulary of words: 46482
+- vocabulary of taggs: 81
+
 | Tagg | Counts |      percent       |                          Words                          |
 | :--- | :----- | :----------------- | :------------------------------------------------------ |
 | sps  | 70141  | 13.559869236316114 |             ['de', 'en', 'a', 'con', 'por']             |
