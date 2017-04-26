@@ -8,6 +8,7 @@ Options:
   -h --help     Show this screen.
 """
 from docopt import docopt
+from prettytable import PrettyTable
 
 from corpus.ancora import SimpleAncoraCorpusReader
 from collections import defaultdict, Counter
@@ -23,9 +24,6 @@ if __name__ == '__main__':
     # compute the statistics
     print('-> sents: {}'.format(len(sents)))
 
-    total_words = sum([len(sent) for sent in sents])
-    print('-> total words: {}'.format(total_words))
-
     words, taggs = zip(*[ x for sent in sents for x in sent])
     print('-> total words: {}'.format(len(words)))
 
@@ -35,8 +33,26 @@ if __name__ == '__main__':
     print('-> vocabulary of taggs: {}'.format(len(vocabulary_of_taggs)))
 
     counter_taggs = Counter(taggs)
+    total_taggs = len(taggs)
     most_common_taggs = counter_taggs.most_common()[:10]
 
-    print("\nTagg" + "\t" + "Counts")
+    # t = taggs c = counts
+    t, c = zip(*most_common_taggs)
+
+    # dict_words_most_common["TAGG"] = [ "word1", "word2", "word3"]
+    dict_words_most_common = defaultdict(list)
+    for sent in sents:
+        for a, b in sent:
+            if b in t:
+                dict_words_most_common[b].append(a)
+
+    # w["tagg"] = "5 most common words" = [(word1, count1), (word2, count2)...]
+    w = defaultdict(list)
+    for t in dict_words_most_common.keys():
+        w[t] = Counter(dict_words_most_common[t]).most_common()[:5]
+
+
+    print("\nTagg" + "\t" + "Counts" + "\t" + "percent" + "\t\t\t " + "words")
     for a, b in most_common_taggs:
-        print(str(a) + "  | " + str(b))
+        words = [a for a, b in w[a]]
+        print(str(a) + "  | " + str(b) + "  | " + str((b/total_taggs) * 100) +  "  | " + str(words))
