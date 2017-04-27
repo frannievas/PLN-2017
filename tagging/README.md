@@ -5,10 +5,11 @@
 
 ### Ejercicio 1: Corpus Ancora: Estadísticas de etiquetas POS
 
-- sents: 17379
-- total words: 517269
-- vocabulary of words: 46482
-- vocabulary of taggs: 81
+- sents: 17378
+- total words: 517194
+- vocabulary of words: 46501
+- vocabulary of taggs: 85
+
 
 ##### Descripción de los taggs
 - Adjetivo: a
