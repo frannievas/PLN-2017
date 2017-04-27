@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     MYPATH = "../../corpus/"
     # load the data
-    corpus = SimpleAncoraCorpusReader(MYPATH + 'ancora-2.0/')
+    corpus = SimpleAncoraCorpusReader(MYPATH + 'ancora-3.0.1es/')
     sents = list(corpus.tagged_sents())
 
     # compute the statistics
@@ -52,10 +52,11 @@ if __name__ == '__main__':
         w[t] = Counter(dict_words_most_common[t]).most_common()[:5]
 
 
-    print("\nTagg" + "\t" + "Counts" + "\t" + "percent" + "\t\t\t " + "words")
-    for a, b in most_common_taggs:
-        words = [a for a, b in w[a]]
-        print(str(a) + "  | " + str(b) + "  | " + str((b/total_taggs) * 100) +  "  | " + str(words))
+    # Old print
+    # print("\nTagg" + "\t" + "Counts" + "\t" + "percent" + "\t\t\t " + "words")
+    # for a, b in most_common_taggs:
+    #     words = [a for a, b in w[a]]
+    #     print(str(a) + "  | " + str(b) + "  | " + str((b/total_taggs) * 100) +  "  | " + str(words))
 
 
     t = PrettyTable(["Tagg", "Counts", "percent", "Words"])
