@@ -1,10 +1,12 @@
 from collections import Counter, defaultdict
 
+
 class BaselineTagger:
 
     def __init__(self, tagged_sents):
         """
-        Programar un etiquetador baseline, que elija para cada palabra su etiqueta más frecuente observada en entrenamiento.
+        Programar un etiquetador baseline, que elija para cada palabra su
+        etiqueta más frecuente observada en entrenamiento.
         Para las palabras desconocidas, devolver la etiqueta 'nc0s000'.
 
         tagged_sents -- training sentences, each one being a list of pairs.
