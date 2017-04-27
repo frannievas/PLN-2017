@@ -64,3 +64,14 @@ if __name__ == '__main__':
         row = [str(a), str(b), str((b/total_taggs) * 100), str([a for a, b in w[a]]) ]
         t.add_row(row)
     print(t)
+
+
+    # ambiguous table
+    ambiguous = defaultdict(set)
+    for sent in sents:
+        for w, t in sent:
+            ambiguous[w].add(t)
+
+    print("\n")
+    for i in range(1, 9):
+        print("Level {}: {}".format(i, sum([ 1 for x in ambiguous.keys() if len(ambiguous[x]) == i])))
