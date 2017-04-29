@@ -72,6 +72,22 @@ if __name__ == '__main__':
         for w, t in sent:
             ambiguous[w].add(t)
 
-    print("\n")
-    for i in range(1, 9):
-        print("Level {}: {}".format(i, sum([ 1 for x in ambiguous.keys() if len(ambiguous[x]) == i])))
+    # ambiguous table
+    count_levels = Counter(w for sent in sents for w, t in sent)
+
+    # leveli[i]= "words with level i of ambiguety"
+    leveli = []
+    # most_common_words_levels[i] = "5 most common words with level i of ambiguety"
+    most_common_words_levels = []
+    for i in range(1,9):
+        leveli.append([ x for x in ambiguous.keys() if len(ambiguous[x]) == i])
+        counti = { w: count_levels[w] for w in leveli[i-1]}
+        counti = Counter(counti)
+        most_common_words_levels.append(counti.most_common(5))
+
+    # Print the PrettyTable
+    t = PrettyTable(["Level of Ambiguity", "Counts", "Words"])
+    for i in range(0, 8):
+        row = ["{}".format(i+1), str(len(leveli[i])), most_common_words_levels[i]]
+        t.add_row(row)
+    print(t)
