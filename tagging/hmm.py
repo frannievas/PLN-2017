@@ -1,3 +1,6 @@
+from math import log2
+
+
 class HMM:
 
     def __init__(self, n, tagset, trans, out):
@@ -25,7 +28,16 @@ class HMM:
         tag -- the tag.
         prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
         """
-        return self.trans[prev_tags][tag]
+        prob = 0.0
+
+        # No tags, empty tuple.
+        if self._n == 1:
+            prev_tags = ()
+
+        if prev_tags in self.trans and tag in self.trans[prev_tags]:
+            prob = self.trans[prev_tags][tag]
+
+        return prob
 
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
@@ -33,9 +45,12 @@ class HMM:
         word -- the word.
         tag -- the tag.
         """
-        # TODO: probabilidad de una palabra dado un tagg
-        # TODO: else 0
-        return self.out[tag][word]
+        prob = 0.0
+
+        if tag in self.out and word in self.out[tag]:
+            prob = self.out[tag][word]
+
+        return prob
 
     def tag_prob(self, y):
         """
@@ -46,17 +61,18 @@ class HMM:
         """
         # TODO: Dado una secuencia de taggs devuelve su probabilidad
         prob = 0.0
+        n = self.n
         prev_tags = self.start_tag*(n-1)
         y_extended = y + self.end_tag
 
-        for tagg in y_extended:
-            prob *= self.trans_prob(tag, context)
+        for tag in y_extended:
+            prob *= self.trans_prob(tag, prev_tags)
 
             # Delete 1 prev_tags and add the "tagg"
             if self._n > 1:
-                context = context[1:] + (tagg,)
+                prev_tags = prev_tags[1:] + (tag,)
 
-
+        return prob
 
     def prob(self, x, y):
         """
@@ -67,12 +83,40 @@ class HMM:
         y -- tagging.
         """
 
+        prob = 0.0
+        tagging_prob = self.tag_prob(y)
+
+        if tagging_prob > 0:
+            for i in range(len(x)):
+                prob *= self.out_prob(x[i], y[i])
+
+        return tagging_prob * prob
+
     def tag_log_prob(self, y):
         """
         Log-probability of a tagging.
 
         y -- tagging.
         """
+        log_prob = 0.0
+        n = self.n
+        prev_tags = self.start_tag*(n-1)
+        y_extended = y + self.end_tag
+
+        for tag in y_extended:
+            prob = self.trans_prob(tag, prev_tags)
+
+            # Delete 1 prev_tags and add the "tagg"
+            if self._n > 1:
+                prev_tags = prev_tags[1:] + (tag,)
+
+            if prob > 0:
+                log_prob += log2(prob)
+            else:
+                log_prob = float("-inf")
+                break
+
+        return log_prob
 
     def log_prob(self, x, y):
         """
@@ -81,6 +125,20 @@ class HMM:
         x -- sentence.
         y -- tagging.
         """
+        log_prob = 0.0
+        tagging_prob = self.tag_log_prob(y)
+
+        if tagging_prob != float("-inf"):
+            for i in range(len(x)):
+                prob = self.out_prob(x[i], y[i])
+                if prob > 0:
+                    log_prob += log2(prob)
+                else:
+                    log_prob = float("-inf")
+                    break
+
+        # Log(x * y) = log(x) + log(y)
+        return tagging_prob + log_prob
 
     def tag(self, sent):
         """Returns the most probable tagging for a sentence.
