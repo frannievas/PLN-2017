@@ -174,7 +174,7 @@ class ViterbiTagger:
 
             for tag in hmm.tagset:
                 # e(Xk|v)
-                e = hmm.out_prob(sent[k], tag)
+                e = hmm.out_prob(sent[k-1], tag)
                 if e > 0:
                     for key in pi[k-1].keys():
                         # q(v | w, t2...tn-1)
@@ -193,8 +193,8 @@ class ViterbiTagger:
         for key in pi[m].keys():
             prob = hmm.trans_prob('</s>', key)
             if prob > 0.0:
-                (p, tag_sent) = pi[k-1][key]
-                new_lp = prob + log2(p)
+                (p, tag_sent) = pi[m][key]
+                new_lp = p + log2(prob)
                 if new_lp > max_prob:
                     max_prob = new_lp
                     result = tag_sent
