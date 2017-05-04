@@ -214,19 +214,14 @@ class MLHMM(HMM):
         self.tagged_sents = tagged_sents
         self.tcounts = tcounts = defaultdict(int)
         self.counts = counts = defaultdict(int)
+        self.addone = addone
 
         sents = [list(zip(*x))[0] for x in tagged_sents]
         tags = [list(zip(*x))[1] for x in tagged_sents]
 
         for tagged_sent in tagged_sents:
             for w, t in tagged_sent:
-                counts[tuple((w,t))] += 1
-
-        # for sent in sents:
-        #     for i in range(len(sent) - n + 1):
-        #         ngram = tuple(sent[i: i + n])
-        #         counts[ngram] += 1
-        #         counts[ngram[:-1]] += 1
+                counts[w,t] += 1
 
         for tag in tags:
             for i in range(len(tag) - n + 1):
@@ -234,6 +229,7 @@ class MLHMM(HMM):
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
 
+        self.vocabulary = { word for sent in sents for word in sent}
 
         # super().__init__(n, tagset, trans, out)
 
@@ -242,7 +238,7 @@ class MLHMM(HMM):
 
         tokens -- the n-gram or (n-1)-gram tuple of tags.
         """
-        pass
+        return self.tcounts[tuple(tokens)]
 
 
     def trans_prob(self, tag, prev_tags):
@@ -251,7 +247,17 @@ class MLHMM(HMM):
         tag -- the tag.
         prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
         """
-        pass # q(Yi | Yi-1, Yi-2, ...Yi-k)
+        # q(Yi | Yi-1, Yi-2, ...Yi-k)
+        if not prev_tags:
+            prev_tags = []
+
+        tags = [tag] + prev_tags
+
+        # TODO:
+        if self.addone:
+            pass
+
+        return self.tcounts[tuple(tags)]
 
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
@@ -259,14 +265,22 @@ class MLHMM(HMM):
         word -- the word.
         tag -- the tag.
         """
-        pass # e(word| tag)
+        # e(word| tag)
+        num = self.counts[word,tag]
+        den = self.tcounts[tuple(tag)]
+
+        # TODO:
+        if self.addone:
+            pass
+
+        return num / den
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
         w -- the word.
         """
-        pass
+        return w in self.vocabulary
 
         """
         Todos los métodos de HMM.
