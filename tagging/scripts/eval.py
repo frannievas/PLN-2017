@@ -11,9 +11,10 @@ Options:
 from docopt import docopt
 import pickle
 import sys
+import numpy
 
 from corpus.ancora import SimpleAncoraCorpusReader
-
+from sklearn.metrics import confusion_matrix
 
 def progress(msg, width=None):
     """Ouput the progress of something on the same line."""
@@ -41,10 +42,15 @@ if __name__ == '__main__':
     # tag
     hits, hits_known, hits_unknown, total = 0, 0, 0, 0
     n = len(sents)
+    y_test = []
+    y_pred = []
+
     for i, sent in enumerate(sents):
         word_sent, gold_tag_sent = zip(*sent)
 
         model_tag_sent = model.tag(word_sent)
+        y_test += gold_tag_sent
+        y_pred += model_tag_sent
         assert len(model_tag_sent) == len(gold_tag_sent), i
 
         # global score
@@ -74,3 +80,9 @@ if __name__ == '__main__':
     print('Accuracy: {:2.2f}%'.format(acc * 100))
     print('Accuracy Known: {:2.2f}%'.format(acc_known * 100))
     print('Accuracy Unknown: {:2.2f}%'.format(acc_unknown * 100))
+
+    # Confusion matrix.
+    cm = confusion_matrix(y_test, y_pred)
+    numpy.set_printoptions()
+    print("Confusion matrix:")
+    print(cm)
