@@ -1,4 +1,5 @@
 from math import log2
+from collections import defaultdict
 
 
 class HMM:
@@ -221,7 +222,7 @@ class MLHMM(HMM):
 
         for tagged_sent in tagged_sents:
             for w, t in tagged_sent:
-                counts[w,t] += 1
+                counts[w, t] += 1
 
         for tag in tags:
             for i in range(len(tag) - n + 1):
@@ -229,8 +230,8 @@ class MLHMM(HMM):
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
 
-        self.words_vocabulary = { word for sent in sents for word in sent}
-        self.tags_vocabulary = { tag for sent_tag in tags for tag in sent_tag}
+        self.words_vocabulary = {word for sent in sents for word in sent}
+        self.tags_vocabulary = {tag for sent_tag in tags for tag in sent_tag}
 
         # super().__init__(n, tagset, trans, out)
 
@@ -240,7 +241,6 @@ class MLHMM(HMM):
         tokens -- the n-gram or (n-1)-gram tuple of tags.
         """
         return self.tcounts[tuple(tokens)]
-
 
     def trans_prob(self, tag, prev_tags):
         """Probability of a tag.
@@ -265,7 +265,6 @@ class MLHMM(HMM):
 
         return num / den
 
-
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
 
@@ -277,7 +276,7 @@ class MLHMM(HMM):
         if self.unknown(word):
             return 1 / len(self.words_vocabulary)
         else:
-            num = self.counts[word,tag]
+            num = self.counts[word, tag]
             den = self.tcounts[tuple(tag)]
 
         if den == 0:
