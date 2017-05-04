@@ -308,6 +308,23 @@ class MLHMM(HMM):
             return 0
         return num / den
 
+
+    def trans_prob(self, tag, prev_tags):
+        """Probability of a tag.
+
+        tag -- the tag.
+        prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
+        """
+        pass # q(Yi | Yi-1, Yi-2, ...Yi-k)
+
+    def out_prob(self, word, tag):
+        """Probability of a word given a tag.
+
+        word -- the word.
+        tag -- the tag.
+        """
+        pass # e(word| tag)
+
     def unknown(self, w):
         """Check if a word is unknown for the model.
 
