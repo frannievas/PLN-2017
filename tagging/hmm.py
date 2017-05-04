@@ -229,7 +229,8 @@ class MLHMM(HMM):
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
 
-        self.vocabulary = { word for sent in sents for word in sent}
+        self.words_vocabulary = { word for sent in sents for word in sent}
+        self.tags_vocabulary = { tag for sent_tag in tags for tag in sent_tag}
 
         # super().__init__(n, tagset, trans, out)
 
@@ -253,11 +254,17 @@ class MLHMM(HMM):
 
         tags = [tag] + prev_tags
 
-        # TODO:
-        if self.addone:
-            pass
+        V = len(self.tags_vocabulary)
 
-        return self.tcounts[tuple(tags)]
+        if self.addone:
+            num = self.tcounts[tuple(tags)] + 1
+            den = self.tcounts[tuple(tags)] + V
+        else:
+            num = self.tcounts[tuple(tags)]
+            den = self.tcounts[tuple(tags)]
+
+        return num / den
+
 
     def out_prob(self, word, tag):
         """Probability of a word given a tag.
@@ -266,13 +273,15 @@ class MLHMM(HMM):
         tag -- the tag.
         """
         # e(word| tag)
-        num = self.counts[word,tag]
-        den = self.tcounts[tuple(tag)]
 
-        # TODO:
-        if self.addone:
-            pass
+        if self.unknown(word):
+            return 1 / len(self.words_vocabulary)
+        else:
+            num = self.counts[word,tag]
+            den = self.tcounts[tuple(tag)]
 
+        if den == 0:
+            return 0
         return num / den
 
     def unknown(self, w):
