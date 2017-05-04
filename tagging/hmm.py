@@ -87,7 +87,7 @@ class HMM:
 
         prob = 1.0
         tagging_prob = self.tag_prob(y)
-
+        import ipdb; ipdb.set_trace()
         if tagging_prob > 0:
             for i in range(len(x)):
                 prob *= self.out_prob(x[i], y[i])
@@ -169,6 +169,7 @@ class ViterbiTagger:
         self._pi = pi = {}
         pi[0] = {tuple((n-1) * self.hmm.start_tag): (log2(1.0), [])}
         m = len(sent)
+        result = ""
 
         for k in range(1, m+1):
             pi[k] = {}
@@ -211,6 +212,8 @@ class MLHMM(HMM):
         tagged_sents -- training sentences, each one being a list of pairs.
         addone -- whether to use addone smoothing (default: True).
         """
+        self.start_tag = ["<s>"]
+        self.end_tag = ["</s>"]
         self.n = n
         self.tagged_sents = tagged_sents
         self.tcounts = tcounts = defaultdict(int)
@@ -225,15 +228,14 @@ class MLHMM(HMM):
                 counts[w, t] += 1
 
         for tag in tags:
-            for i in range(len(tag) - n + 1):
-                ngram = tuple(tag[i: i + n])
+            tagged_extended = ("<s>",)*(n-1) + tag + ("</s>",)
+            for i in range(len(tagged_extended) - n + 1):
+                ngram = tuple(tagged_extended[i: i + n])
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
 
-        self.words_vocabulary = {word for sent in sents for word in sent}
-        self.tags_vocabulary = {tag for sent_tag in tags for tag in sent_tag}
-
-        # super().__init__(n, tagset, trans, out)
+        self.wordset = {word for sent in sents for word in sent}
+        self.tagset = {tag for sent_tag in tags for tag in sent_tag}
 
     def tcount(self, tokens):
         """Count for an n-gram or (n-1)-gram of tags.
@@ -249,20 +251,24 @@ class MLHMM(HMM):
         prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
         """
         # q(Yi | Yi-1, Yi-2, ...Yi-k)
-        if not prev_tags:
-            prev_tags = []
 
-        tags = [tag] + prev_tags
+        # No tags, empty tuple.
+        if self.n == 1:
+            prev_tags = ()
 
-        V = len(self.tags_vocabulary)
+        tags = (tag,) + prev_tags
+
+        V = len(self.tagset)
 
         if self.addone:
-            num = self.tcounts[tuple(tags)] + 1
-            den = self.tcounts[tuple(tags)] + V
+            num = self.tcounts[tags] + 1
+            den = self.tcounts[prev_tags] + V
         else:
-            num = self.tcounts[tuple(tags)]
-            den = self.tcounts[tuple(tags)]
+            num = self.tcounts[tags]
+            den = self.tcounts[prev_tags]
 
+        if den == 0:
+            return 0
         return num / den
 
     def out_prob(self, word, tag):
@@ -274,7 +280,7 @@ class MLHMM(HMM):
         # e(word| tag)
 
         if self.unknown(word):
-            return 1 / len(self.words_vocabulary)
+            return 1 / len(self.wordset)
         else:
             num = self.counts[word, tag]
             den = self.tcounts[tuple(tag)]
@@ -288,7 +294,7 @@ class MLHMM(HMM):
 
         w -- the word.
         """
-        return w in self.vocabulary
+        return w in self.wordset
 
         """
         Todos los métodos de HMM.
