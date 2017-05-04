@@ -200,3 +200,32 @@ class ViterbiTagger:
                     result = tag_sent
 
         return result
+
+
+class MLHMM:
+
+    def __init__(self, n, tagged_sents, addone=True):
+        """
+        n -- order of the model.
+        tagged_sents -- training sentences, each one being a list of pairs.
+        addone -- whether to use addone smoothing (default: True).
+        """
+        pass
+
+    def tcount(self, tokens):
+        """Count for an n-gram or (n-1)-gram of tags.
+
+        tokens -- the n-gram or (n-1)-gram tuple of tags.
+        """
+        pass
+
+    def unknown(self, w):
+        """Check if a word is unknown for the model.
+
+        w -- the word.
+        """
+        pass
+
+        """
+        Todos los métodos de HMM.
+        """
