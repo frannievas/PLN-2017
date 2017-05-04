@@ -202,7 +202,7 @@ class ViterbiTagger:
         return result
 
 
-class MLHMM:
+class MLHMM(HMM):
 
     def __init__(self, n, tagged_sents, addone=True):
         """
@@ -210,7 +210,32 @@ class MLHMM:
         tagged_sents -- training sentences, each one being a list of pairs.
         addone -- whether to use addone smoothing (default: True).
         """
-        pass
+        self.n = n
+        self.tagged_sents = tagged_sents
+        self.tcounts = tcounts = defaultdict(int)
+        self.counts = counts = defaultdict(int)
+
+        sents = [list(zip(*x))[0] for x in tagged_sents]
+        tags = [list(zip(*x))[1] for x in tagged_sents]
+
+        for tagged_sent in tagged_sents:
+            for w, t in tagged_sent:
+                counts[tuple((w,t))] += 1
+
+        # for sent in sents:
+        #     for i in range(len(sent) - n + 1):
+        #         ngram = tuple(sent[i: i + n])
+        #         counts[ngram] += 1
+        #         counts[ngram[:-1]] += 1
+
+        for tag in tags:
+            for i in range(len(tag) - n + 1):
+                ngram = tuple(tag[i: i + n])
+                tcounts[ngram] += 1
+                tcounts[ngram[:-1]] += 1
+
+
+        # super().__init__(n, tagset, trans, out)
 
     def tcount(self, tokens):
         """Count for an n-gram or (n-1)-gram of tags.
@@ -218,6 +243,23 @@ class MLHMM:
         tokens -- the n-gram or (n-1)-gram tuple of tags.
         """
         pass
+
+
+    def trans_prob(self, tag, prev_tags):
+        """Probability of a tag.
+
+        tag -- the tag.
+        prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
+        """
+        pass # q(Yi | Yi-1, Yi-2, ...Yi-k)
+
+    def out_prob(self, word, tag):
+        """Probability of a word given a tag.
+
+        word -- the word.
+        tag -- the tag.
+        """
+        pass # e(word| tag)
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
