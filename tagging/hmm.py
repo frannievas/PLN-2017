@@ -86,8 +86,8 @@ class HMM:
         """
 
         prob = 1.0
+
         tagging_prob = self.tag_prob(y)
-        import ipdb; ipdb.set_trace()
         if tagging_prob > 0:
             for i in range(len(x)):
                 prob *= self.out_prob(x[i], y[i])
@@ -256,7 +256,7 @@ class MLHMM(HMM):
         if self.n == 1:
             prev_tags = ()
 
-        tags = (tag,) + prev_tags
+        tags = prev_tags + (tag,)
 
         V = len(self.tagset)
 
@@ -294,7 +294,7 @@ class MLHMM(HMM):
 
         w -- the word.
         """
-        return w in self.wordset
+        return w not in self.wordset
 
         """
         Todos los métodos de HMM.
