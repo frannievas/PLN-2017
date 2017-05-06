@@ -171,6 +171,8 @@ class ViterbiTagger:
         m = len(sent)
         result = ""
 
+        import ipdb; ipdb.set_trace()
+
         for k in range(1, m+1):
             pi[k] = {}
 
@@ -220,12 +222,24 @@ class MLHMM(HMM):
         self.counts = counts = defaultdict(int)
         self.addone = addone
 
-        sents = [list(zip(*x))[0] for x in tagged_sents]
-        tags = [list(zip(*x))[1] for x in tagged_sents]
+        # TODO: Doesn't work when x is []
+        sents = [list(zip(*x))[0] for x in tagged_sents if x != []]
+        tags = [list(zip(*x))[1] for x in tagged_sents if x != []]
+
+        # sents = []
+        # tags = []
 
         for tagged_sent in tagged_sents:
+            # sent = []
+            # sent_tag = []
             for w, t in tagged_sent:
                 counts[w, t] += 1
+            #     sent.append(w)
+            #     sent_tag.append(w)
+            # sents.append(tuple(sent))
+            # tags.append(tuple(sent_tag))
+
+
 
         for tag in tags:
             tagged_extended = ("<s>",)*(n-1) + tag + ("</s>",)
@@ -233,6 +247,9 @@ class MLHMM(HMM):
                 ngram = tuple(tagged_extended[i: i + n])
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
+            :# XXX: Hard
+            if n > 2:
+                tcounts[(tag,)] += 1
 
         self.wordset = {word for sent in sents for word in sent}
         self.tagset = {tag for sent_tag in tags for tag in sent_tag}
@@ -279,11 +296,13 @@ class MLHMM(HMM):
         """
         # e(word| tag)
 
+        import ipdb; ipdb.set_trace()
+
         if self.unknown(word):
             return 1 / len(self.wordset)
         else:
             num = self.counts[word, tag]
-            den = self.tcounts[tuple(tag)]
+            den = self.tcounts[(tag,)]
 
         if den == 0:
             return 0
