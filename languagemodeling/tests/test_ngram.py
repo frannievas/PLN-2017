@@ -35,29 +35,29 @@ class TestNGram(TestCase):
         ngram = NGram(2, self.sents)
 
         counts = {
-            ('<s>',): 2,
-            ('el',): 1,
-            ('gato',): 1,
-            ('come',): 2,
-            ('pescado',): 1,
             ('.',): 2,
-            ('la',): 1,
-            ('gata',): 1,
-            ('salmón',): 1,
-            ('<s>', 'el'): 1,
-            ('el', 'gato'): 1,
-            ('gato', 'come'): 1,
-            ('come', 'pescado'): 1,
-            ('pescado', '.'): 1,
             ('.', '</s>'): 2,
-            ('<s>', 'la'): 1,
-            ('la', 'gata'): 1,
-            ('gata', 'come'): 1,
+            ('come',): 2,
+            ('come', 'pescado'): 1,
             ('come', 'salmón'): 1,
+            ('el',): 1,
+            ('el', 'gato'): 1,
+            ('gata',): 1,
+            ('gata', 'come'): 1,
+            ('gato',): 1,
+            ('gato', 'come'): 1,
+            ('la',): 1,
+            ('la', 'gata'): 1,
+            ('pescado',): 1,
+            ('pescado', '.'): 1,
+            ('salmón',): 1,
             ('salmón', '.'): 1,
+            ('<s>',): 2,
+            ('<s>', 'el'): 1,
+            ('<s>', 'la'): 1,
         }
         for gram, c in counts.items():
-            self.assertEqual(ngram.count(gram), c)
+            self.assertEqual(ngram.count(gram), c, msg=gram)
 
     def test_cond_prob_1gram(self):
         ngram = NGram(1, self.sents)
@@ -68,7 +68,7 @@ class TestNGram(TestCase):
             'salame': 0.0,
         }
         for token, p in probs.items():
-            self.assertEqual(ngram.cond_prob(token), p)
+            self.assertEqual(ngram.cond_prob(token), p, msg=token)
 
     def test_cond_prob_2gram(self):
         ngram = NGram(2, self.sents)
@@ -79,7 +79,7 @@ class TestNGram(TestCase):
             ('salame', 'come'): 0.0,
         }
         for (token, prev), p in probs.items():
-            self.assertEqual(ngram.cond_prob(token, [prev]), p)
+            self.assertEqual(ngram.cond_prob(token, [prev]), p, msg=token)
 
     def test_sent_prob_1gram(self):
         ngram = NGram(1, self.sents)
