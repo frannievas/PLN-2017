@@ -171,7 +171,6 @@ class ViterbiTagger:
         m = len(sent)
         result = ""
 
-        import ipdb; ipdb.set_trace()
 
         for k in range(1, m+1):
             pi[k] = {}
@@ -247,9 +246,9 @@ class MLHMM(HMM):
                 ngram = tuple(tagged_extended[i: i + n])
                 tcounts[ngram] += 1
                 tcounts[ngram[:-1]] += 1
-            :# XXX: Hard
-            if n > 2:
-                tcounts[(tag,)] += 1
+                # XXX: Hard
+                if n > 2:
+                    tcounts[(tagged_extended[i],)] += 1
 
         self.wordset = {word for sent in sents for word in sent}
         self.tagset = {tag for sent_tag in tags for tag in sent_tag}
@@ -296,7 +295,6 @@ class MLHMM(HMM):
         """
         # e(word| tag)
 
-        import ipdb; ipdb.set_trace()
 
         if self.unknown(word):
             return 1 / len(self.wordset)
@@ -307,23 +305,6 @@ class MLHMM(HMM):
         if den == 0:
             return 0
         return num / den
-
-
-    def trans_prob(self, tag, prev_tags):
-        """Probability of a tag.
-
-        tag -- the tag.
-        prev_tags -- tuple with the previous n-1 tags (optional only if n = 1).
-        """
-        pass # q(Yi | Yi-1, Yi-2, ...Yi-k)
-
-    def out_prob(self, word, tag):
-        """Probability of a word given a tag.
-
-        word -- the word.
-        tag -- the tag.
-        """
-        pass # e(word| tag)
 
     def unknown(self, w):
         """Check if a word is unknown for the model.
