@@ -27,6 +27,15 @@ def word_istitle(h):
     return sent[i].istitle()
 
 
+def word_isupper(h):
+    """Feature: current uppercased word?
+
+    h -- a history.
+    """
+    sent, i = h.sent, h.i
+    return sent[i].isupper()
+
+
 class NPrevTags(Feature):
 
     def __init__(self, n):
