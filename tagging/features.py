@@ -44,6 +44,13 @@ def word_isdigit(h):
     return sent[i].isdigit()
 
 
+def prev_tags(h):
+    """Feature: previous tags
+
+    h -- a history.
+    """
+    return h.prev_tags
+
 class NPrevTags(Feature):
 
     def __init__(self, n):
@@ -51,13 +58,15 @@ class NPrevTags(Feature):
 
         n -- number of previous tags to consider.
         """
+        self.n = n
 
     def _evaluate(self, h):
         """n previous tags tuple.
 
         h -- a history.
         """
-
+        n = self.n
+        return prev_tags(h)[-n:]
 
 class PrevWord(Feature):
 
@@ -66,9 +75,16 @@ class PrevWord(Feature):
 
         f -- the feature.
         """
+        self.f = f
 
     def _evaluate(self, h):
         """Apply the feature to the previous word in the history.
 
         h -- the history.
         """
+
+        if h.i == 0:
+            return 'BOS'
+
+        new_history = History(list(h.sent), tuple(h.prev_tags), h.i - 1)
+        return str(self.f(new_history))
