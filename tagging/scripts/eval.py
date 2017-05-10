@@ -40,7 +40,8 @@ if __name__ == '__main__':
     sents = list(corpus.tagged_sents())
 
     # tag
-    hits, hits_known, hits_unknown, total = 0, 0, 0, 0
+    hits, hits_known, hits_unknown = 0, 0, 0
+    total, total_known, total_unknown = 0, 0, 0
     n = len(sents)
     y_test = []
     y_pred = []
@@ -64,17 +65,19 @@ if __name__ == '__main__':
         pos_unknown = [k for k in range(l) if model.unknown(word_sent[k])]
         hits_unknown_sent = [model_tag_sent[k] == gold_tag_sent[k] for k in pos_unknown]
         hits_unknown += sum(hits_unknown_sent)
+        total_unknown += len(pos_unknown)
 
         # known
         pos_known = [k for k in range(l) if not model.unknown(word_sent[k])]
         hits_known_sent = [model_tag_sent[k] == gold_tag_sent[k] for k in pos_known]
         hits_known += sum(hits_known_sent)
+        total_known += len(pos_known)
 
         progress('{:3.1f}% ({:2.2f}%)'.format(float(i) * 100 / n, acc * 100))
 
     acc = float(hits) / total
-    acc_known = float(hits_known) / total
-    acc_unknown = float(hits_unknown) / total
+    acc_known = float(hits_known) / total_known
+    acc_unknown = float(hits_unknown) / total_unknown
 
     print('')
     print('Accuracy: {:2.2f}%'.format(acc * 100))
