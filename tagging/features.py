@@ -17,6 +17,16 @@ def word_lower(h):
     sent, i = h.sent, h.i
     return sent[i].lower()
 
+
+def word_istitle(h):
+    """Feature: is the current word titlecased?
+
+    h -- a history.
+    """
+    sent, i = h.sent, h.i
+    return sent[i].istitle()
+
+
 class NPrevTags(Feature):
 
     def __init__(self, n):
