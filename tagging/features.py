@@ -1,5 +1,4 @@
 from collections import namedtuple
-
 from featureforge.feature import Feature
 
 
@@ -34,6 +33,15 @@ def word_isupper(h):
     """
     sent, i = h.sent, h.i
     return sent[i].isupper()
+
+
+def word_isdigit(h):
+    """Feature: is the current word a digit?
+
+    h -- a history.
+    """
+    sent, i = h.sent, h.i
+    return sent[i].isdigit()
 
 
 class NPrevTags(Feature):
