@@ -160,9 +160,17 @@ Los resultados fueron:
 | zm | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 55 |
 
 
+### Ejercicio4
+
+Se implementó un Hidden Markov Model cuyos parámetros son las probabilidades de transición entre estados (las etiquetas) y de emisión de símbolos (las palabras).
+Además, se implementó el algoritmo de Viterbi que calcula el etiquetado más probable de una oración.
 
 ### Ejercicio5
 
+Se implementó la clase *MLHMM* que modela un Hidden Markov Model cuyos parámetros se estiman usando Maximum Likelihood sobre un corpus de oraciones etiquetado.
+Se agregó al script de entrenamiento (train.py) una opción de línea de comandos que permita utilizar la *MLHMM* con distintos valores de n.
+
+##### Resultados
 
 | N            |   1    | 2      | 3        | 4  |
 | :--          | :---   | :-     | :-       | :- |
@@ -171,19 +179,5 @@ Los resultados fueron:
 | UnKnown acc  | 0.45%  | 34.33% | 39.50%   |
 | Time         | 13.574s| 27.249s| 2m34.109s|
 
-
-Accuracy: 91.87%
-Accuracy Known: 97.65%
-Accuracy Unknown: 39.50%
-Confusion matrix:
-[[ 255    0    0 ...,    0    0    0]
- [   1 5773   12 ...,    0    0    1]
- [   0    0 3156 ...,    0    0    0]
- ...,
- [   0    0    0 ...,    0    0    0]
- [   0    0    0 ...,    0   28    0]
- [   0    1    0 ...,    0    0   54]]
-
-real	2m34.109s
-user	2m33.920s
-sys	0m0.544s
+Se puede observar que la accuracy para palabras desconocidas con *N = 1* es mala.
+Pero la accuracy para palabras conocidas es bastante alta con *N = 1,2,3*
