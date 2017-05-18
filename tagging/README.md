@@ -181,3 +181,7 @@ Se agregó al script de entrenamiento (train.py) una opción de línea de comand
 
 Se puede observar que la accuracy para palabras desconocidas con *N = 1* es mala.
 Pero la accuracy para palabras conocidas es bastante alta con *N = 1,2,3*
+
+### Ejercicio6
+
+Se implementó en *features.py* features básicos para el etiquetado de secuencias: word_lower, word_istitle, word_isupper, word_isdigit y prev_tags. Además, se implementó los features paramétricos *NPrevTags* y *PrevWord*.
