@@ -36,9 +36,11 @@ if __name__ == '__main__':
     model = pickle.load(f)
     f.close()
 
+
     print('Loading corpus...')
     files = '3LB-CAST/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/ancora-2.0/', files)
+    MYPATH = '../../corpus/'
+    corpus = SimpleAncoraCorpusReader(MYPATH + 'ancora-3.0.1es/', files)
     parsed_sents = list(corpus.parsed_sents())
 
     # Filter sentences of interest.
