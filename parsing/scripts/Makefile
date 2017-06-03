@@ -23,13 +23,13 @@ eval:
 eval_20:
 	@echo $(LINE)
 	@echo "Model: Flat"
-	time -p python eval.py -i flat -m 20
+	@time -p python eval.py -i flat -m 20
 	@echo $(LINE)
 	@echo "Model: Rbranch"
-	time -p python eval.py -i rbranch -m 20
+	@time -p python eval.py -i rbranch -m 20
 	@echo $(LINE)
 	@echo "Model: Lbranch"
-	time -p python eval.py -i lbranch -m 20
+	@time -p python eval.py -i lbranch -m 20
 	@echo $(LINE)
 
 clean:
