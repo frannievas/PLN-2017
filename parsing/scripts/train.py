@@ -31,8 +31,9 @@ if __name__ == '__main__':
     opts = docopt(__doc__)
 
     print('Loading corpus...')
+    MYPATH = '../../corpus/'
     files = 'CESS-CAST-(A|AA|P)/.*\.tbf\.xml'
-    corpus = SimpleAncoraCorpusReader('ancora/ancora-2.0/', files)
+    corpus = SimpleAncoraCorpusReader(MYPATH + 'ancora-3.0.1es/', files)
 
     print('Training model...')
     model = models[opts['-m']](corpus.parsed_sents())
