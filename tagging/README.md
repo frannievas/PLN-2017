@@ -1,4 +1,4 @@
-## Trabajo Práctico 1 - Modelado de Lenguaje
+## Trabajo Práctico 2 - Etiquetado de Secuencias
 
 - Francisco Nievas
 
